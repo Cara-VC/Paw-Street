@@ -5,7 +5,9 @@ Paw Street builds a community where pet lovers can post about everything related
 
 ## Group Members:
 Lingrui Li 	10478741
+
 Jiyuan Xia 	10468319
+
 An Sun 	10468679
 
 ## Course Technologies:
