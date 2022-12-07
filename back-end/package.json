@@ -1,0 +1,24 @@
+{
+  "name": "paw-street-backend",
+  "version": "1.0.0",
+  "description": "Fluffy friends could be an important part in our life. Studies have shown that they can improve our physical and mental health. In the meantime, it's important to raise pets in a health way. And it could be heart-breaking if someone lost his pet. Paw Street builds a community where pet lovers can post about everything related to their pets including stories and lost and found information. Users can see what's new around them and those lost pets and found pets. We believe that our application will help pet lovers share and gain information to lead a happy time with their pets.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cara-VC/Paw-Street.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cara-VC/Paw-Street/issues"
+  },
+  "homepage": "https://github.com/Cara-VC/Paw-Street#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^4.12.1"
+  }
+}
