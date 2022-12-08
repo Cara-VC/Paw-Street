@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - cd front-end
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling
+      - npm run build
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - front-end/public/**/*
+    - front-end/src/**/*
+    - front-end/package.json
+    - appspec.yml
+    - scripts/**/*
