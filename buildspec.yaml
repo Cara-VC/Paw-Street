@@ -1,5 +1,4 @@
 version: 0.2
-
 phases:
   pre_build:
     commands:
@@ -13,7 +12,6 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-
 artifacts:
   files:
     - front-end/public/**/*
