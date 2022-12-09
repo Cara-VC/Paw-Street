@@ -22,6 +22,6 @@ artifacts:
     - back-end/public/*
     - back-end/routes/*
     - back-end/app.js
-    - back-end/package.js
+    - back-end/package.json
     - appspec.yml
     - scripts/**/*
