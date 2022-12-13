@@ -15,7 +15,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 30vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,21 +36,8 @@
     transform: rotate(360deg);
   }
 }
-
 .map-container {
   height: 400px;
   width: auto;
 }
 
-.sidebar {
-background-color: rgba(35, 55, 75, 0.9);
-color: #fff;
-padding: 6px 12px;
-font-family: monospace;
-z-index: 1;
-position: relative;
-top: 0;
-left: 0;
-margin: 12px;
-border-radius: 4px;
-}

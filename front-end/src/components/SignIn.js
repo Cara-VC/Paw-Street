@@ -10,13 +10,14 @@ import { getAuth } from "firebase/auth";
 
 function SignIn() {
   const auth = getAuth();
-  const { currentUser } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const handleLogin = async (event) => {
     event.preventDefault();
     let { email, password } = event.target.elements;
 
     try {
       await doSignInWithEmailAndPassword(email.value, password.value);
+      // setCurrentUser(auth.currentUser);
     } catch (error) {
       alert(error);
     }
@@ -35,10 +36,10 @@ function SignIn() {
     }
   };
   if (auth.currentUser) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/" />;
   }
   return (
-    <div>
+    <div className="container">
       <h1>Log in</h1>
       <form onSubmit={handleLogin}>
         <div className="form-group">

@@ -3,7 +3,9 @@ import {Navigate} from 'react-router-dom';
 import {doCreateUserWithEmailAndPassword} from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
 import SocialSignIn from './SocialSignIn';
+import {getAuth} from "firebase/auth";
 function SignUp() {
+  const auth = getAuth();
   const {currentUser} = useContext(AuthContext);
   const [pwMatch, setPwMatch] = useState('');
   const handleSignUp = async (e) => {
@@ -26,11 +28,11 @@ function SignUp() {
   };
 
   if (currentUser) {
-    return <Navigate to='/home' />;
+    return <Navigate to='/' />;
   }
 
   return (
-    <div>
+    <div className="container">
       <h1>Sign up</h1>
       {pwMatch && <h4 className='error'>{pwMatch}</h4>}
       <form onSubmit={handleSignUp}>

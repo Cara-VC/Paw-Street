@@ -5,6 +5,11 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import SignOutButton from "./SignOut";
 import "../App.css";
 
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const Navigation = () => {
   const auth = getAuth();
   const [loggedIn, setLoggedIn] = useState(false);
@@ -21,40 +26,36 @@ const Navigation = () => {
 
   const NavigationAuth = () => {
     return (
-      <nav className="navigation">
-        <ul>
-          <li>
-            <NavLink to="/">Landing</NavLink>
-          </li>
-          <li>
-            <NavLink to="/home">Home</NavLink>
-          </li>
-          <li>
-            <NavLink to="/account">Account</NavLink>
-          </li>
-          <li>
-            <SignOutButton />
-          </li>
-        </ul>
-      </nav>
+        <Navbar bg="light" expand="lg">
+          <Container>
+
+              <nav className="navigation">
+                <NavLink to="/">Paw Street</NavLink>
+                <NavLink to="/MyPosts">My Posts</NavLink>
+                <NavLink to="/Notification">Notification</NavLink>
+                <NavLink to="/Profile">Profile</NavLink>
+                <NavLink to="/NewPost">New Post</NavLink>
+                <NavLink to="/Detail">temp</NavLink>
+                <NavLink to="/Edit">temp2</NavLink>
+              </nav>
+
+          </Container>
+        </Navbar>
     );
   };
 
   const NavigationNonAuth = () => {
     return (
-      <nav className="navigation">
-        <ul>
-          <li>
-            <NavLink to="/">Landing</NavLink>
-          </li>
-          <li>
-            <NavLink to="/signup">Sign-up</NavLink>
-          </li>
-          <li>
-            <NavLink to="/signin">Sign-In</NavLink>
-          </li>
-        </ul>
-      </nav>
+        <Navbar bg="light" expand="lg">
+          <Container>
+              <nav className="navigation">
+                <NavLink to="/">Paw Street</NavLink>
+                <NavLink to="/SignIn">Sign In</NavLink>
+                <NavLink to="/SignUp">Sign Up</NavLink>
+                <NavLink to="/Detail">temp</NavLink>
+              </nav>
+          </Container>
+        </Navbar>
     );
   };
 
