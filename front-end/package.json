@@ -10,6 +10,7 @@
     "bootstrap": "^5.2.3",
     "firebase": "^9.15.0",
     "geolib": "^3.3.3",
+    "gm": "^1.25.0",
     "mapbox-gl": "^2.11.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.6.0",
