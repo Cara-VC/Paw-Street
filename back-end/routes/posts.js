@@ -5,11 +5,46 @@ const data = require("../data");
 const posts = data.posts;
 const checker = require("../public/util");
 
+// async function main(){
+//
+//   try{
+//     let a = await posts.getPostsWithParams("-70", "40", "1", "true", "true", "true", "5", "all");
+//     console.dir (a,{depth:null});
+//   }
+//   catch (e){
+//     console.log(e);
+//   }
+// }
+// main()
+
+
 //get all posts
 router.get("/", async (req, res) => {
   console.log("get /posts");
   try {
     const allPosts = await posts.getAllPosts();
+    res.json(allPosts);
+  } catch (e) {
+    res.status(500).json({ message: e });
+  }
+});
+
+//unfinished
+router.get("/:longitude/:latitude", async (req, res) => {
+  console.log("get /posts1");
+  try {
+
+    let longitude = req.params.longitude;
+    let latitude = req.params.latitude;
+    let pagenum = req.query.pagenum;
+    let story = req.query.story;
+    let found = req.query.found;
+    let lost = req.query.lost;
+    let distance = req.query.distance;
+    let time = req.query.time;
+
+
+    const allPosts = await posts.getPostsWithParams(longitude, latitude, pagenum, story, found, lost, distance, time);
     res.json(allPosts);
   } catch (e) {
     res.status(500).json({ message: e });
@@ -26,8 +61,9 @@ router.post("/", async (req, res) => {
     let title = req.body.title;
     let content = req.body.content;
     let image = req.body.image;
-    let longtitude = req.body.longtitude;
+    let longitude = req.body.longitude;
     let latitude = req.body.latitude;
+    let petName = req.body.petName;
 
     const newPost = await posts.creatPost(
       userName,
@@ -36,8 +72,9 @@ router.post("/", async (req, res) => {
       title,
       content,
       image,
-      longtitude,
-      latitude
+      longitude,
+      latitude,
+      petName
     );
     res.status(200).json(newPost);
   } catch (e) {

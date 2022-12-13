@@ -97,10 +97,10 @@ function ChangePassword() {
   } else {
     return (
       <div>
-        <h2>
+        <h5>
           You are signed in using a Social Media Provider, You cannot change
-          your password
-        </h2>
+          your password on this page!
+        </h5>
       </div>
     );
   }

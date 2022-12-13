@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/Cara-VC/Paw-Street#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
+    "geolib": "^3.3.3",
     "mongodb": "^4.12.1"
   }
 }
