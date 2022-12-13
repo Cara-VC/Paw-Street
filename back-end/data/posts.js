@@ -2,8 +2,55 @@ const mongoCollections = require("../config/mongoCollections");
 const postsCollections = mongoCollections.posts;
 const checker = require("../public/util");
 const { ObjectId } = require("mongodb");
+const geolib = require("geolib")
+// const { getPreciseDistance } from 'geolib';
 //const { post } = require("../routes/posts");
+function checkStatus(singleData,story,lost,found){
+  if(singleData.status == "story" && story == "true"){
+    return true;
+  }
+  if(singleData.status == "lost" && lost == "true"){
+    return true;
+  }
+  if(singleData.status == "found" && found == "true"){
+    return true;
+  }
+  return false;
+}
 
+function checkTime(singleData,time){
+  let difference = (new Date().getTime()) - singleData.time;
+  if(time == "all"){
+    return true;
+  }
+  if(difference/1000/60/60/24 <= 7 && time == "oneWeek"){
+    return true;
+  }
+  if(difference/1000/60/60/24 <= 30 && time == "oneMonth"){
+    return true;
+  }
+  if(difference/1000/60/60/24 <= 90 && time == "threeMonths"){
+    return true;
+  }
+  return false;
+}
+
+function checkDistance(singleData,curLongitude, curLatitude, distance){
+  let tempDistance = geolib.getPreciseDistance({ latitude: curLatitude, longitude: curLongitude },
+      { latitude: singleData.latitude, longitude: singleData.longitude }) / 1000 / 1.6;
+  if(distance == "1" && tempDistance <= 1){
+    return true;
+  }else if(distance == "2" && tempDistance <= 5){
+    return true;
+  }else if(distance == "3" && tempDistance <= 10){
+    return true;
+  }else if(distance == "4" && tempDistance <= 50){
+    return true;
+  }else if(distance == "5"){
+    return true;
+  }
+  return false;
+}
 module.exports = {
   async creatPost(
     userName,
@@ -12,8 +59,9 @@ module.exports = {
     title,
     content,
     image,
-    longtitude,
-    latitude
+    longitude,
+    latitude,
+    petName,
   ) {
     userName = checker.checkUsername(userName);
     userId = checker.checkUserId(userId);
@@ -30,11 +78,10 @@ module.exports = {
       title: title,
       content: content,
       image: image,
-      longtitude: longtitude,
+      longitude: longitude,
       latitude: latitude,
       comments: [],
-      petBreed: null,
-      petName: null,
+      petName: petName,
       time: Date.now(),
     };
 
@@ -64,6 +111,31 @@ module.exports = {
         allPosts[i]._id = allPosts[i]._id.toString();
       }
       return allPosts;
+    } catch (e) {
+      //console.log(e);
+      throw e;
+    } finally {
+      //await postsCollection.closeConnection();
+    }
+  },
+//unfinished
+  async getPostsWithParams(longitude, latitude, pagenum, story, found, lost, distance, time) {
+    try {
+      const postsCollection = await postsCollections();
+      const allPosts = await postsCollection.find({}).toArray();
+      if (!allPosts) throw "Could not get all sweets";
+      for (let i = 0; i < allPosts.length; i++) {
+        allPosts[i]._id = allPosts[i]._id.toString();
+      }
+      let result = [];
+      for(let ele of allPosts){
+        if(checkTime(ele,time) && checkStatus(ele,story,lost,found) && checkDistance(ele,longitude,latitude,distance)){
+          result.push(ele);
+        }
+      }
+      result = result.slice(10*pagenum-10,10*pagenum)
+      console.log(result);
+      return result;
     } catch (e) {
       //console.log(e);
       throw e;
@@ -127,9 +199,9 @@ module.exports = {
     let image = undefined;
     if (!updatedInfo.image) image = prevPost.image;
     else image = updatedInfo.image;
-    let longtitude = undefined;
-    if (!updatedInfo.longtitude) longtitude = prevPost.longtitude;
-    else longtitude = updatedInfo.longtitude;
+    let longitude = undefined;
+    if (!updatedInfo.longitude) longitude = prevPost.longitude;
+    else longitude = updatedInfo.longitude;
     let latitude = undefined;
     if (!updatedInfo.latitude) latitude = prevPost.latitude;
     else latitude = updatedInfo.latitude;
@@ -143,7 +215,7 @@ module.exports = {
           title: title,
           content: content,
           image: image,
-          longtitude: longtitude,
+          longitude: longitude,
           latitude: latitude,
         },
       }
@@ -213,3 +285,7 @@ module.exports = {
     return await this.getPostById(postId);
   },
 };
+
+
+
+
