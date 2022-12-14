@@ -9,7 +9,8 @@ router.get("/:uid", async (req, res) => {
   console.log("get /posts/user/:uid", req.params.uid);
   try {
     let userId = checker.checkUserId(req.params.uid);
-    const postsByUser = await posts.getPostByUserId(userId);
+    let pagenum = req.query.pagenum;
+    const postsByUser = await posts.getPostByUserId(userId,pagenum);
     res.status(200).json(postsByUser);
   } catch (e) {
     console.log(e);

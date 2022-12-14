@@ -11,7 +11,6 @@ import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-
 export default function Home() {
 
     const { currentUser } = useContext(AuthContext);
@@ -28,13 +27,12 @@ export default function Home() {
         .setLngLat(lnglat.current)
         .setPopup(popup1);
 
+
     const navigate = useNavigate();
     const [markerStack, setMarkerStack] = useState([]);
     const [pagenum, setPagenum] = useState(1);
     const [nextPage, setNextPage] = useState(false);
     const [originalData, setOriginalData] = useState([]);
-    const [selectedData, setSelectedData] = useState([]);
-    const [pagedData, setPagedData] = useState([]);
     const [showRange, setShowRange] = useState("Range: 10 miles");
 
     const [tempDistance, setTempDistance] = useState("5");
@@ -78,197 +76,11 @@ export default function Home() {
 
         async function fetchData() {
 
-            // let originalFakeData = [
-            //     {
-            //         id:1,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"story",
-            //         content:"this is story 1 and the rest of this is useless blahblahblahblahblahblahblahblahblahblahblahblahblah" +
-            //             "blahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblah",
-            //         image:[],
-            //         longitude:-74.0290,
-            //         latitude:40.7448,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:2,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"found",
-            //         content:"this is found 2",
-            //         image:[],
-            //         longitude:-74.0266,
-            //         latitude:40.7514,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:3,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 3",
-            //         image:[],
-            //         longitude:-74.0244,
-            //         latitude:40.7542,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:4,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 4",
-            //         image:[],
-            //         longitude:-74.0271,
-            //         latitude:40.7483,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:5,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 5",
-            //         image:[],
-            //         longitude:-74.0276,
-            //         latitude:40.7388,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:6,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 6",
-            //         image:[],
-            //         longitude:-73.9982,
-            //         latitude:40.7358,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:7,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 7",
-            //         image:[],
-            //         longitude:-74.0023,
-            //         latitude:40.7520,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:8,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 8",
-            //         image:[],
-            //         longitude:-74.0010,
-            //         latitude:40.7594,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:9,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 9",
-            //         image:[],
-            //         longitude:-73.9970,
-            //         latitude:40.7335,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:10,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 10",
-            //         image:[],
-            //         longitude:-74.0088,
-            //         latitude:40.7146,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:11,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 11",
-            //         image:[],
-            //         longitude:-73.9978,
-            //         latitude:40.6863,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:12,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 12",
-            //         image:[],
-            //         longitude:-73.9758,
-            //         latitude:40.6916,
-            //         comments:[],
-            //         petName:"kitty"
-            //     },
-            //     {
-            //         id:13,
-            //         title:"I love my kitty",
-            //         time:1670443903704,
-            //         userName:"John",
-            //         userId:1,
-            //         status:"lost",
-            //         content:"this is lost 13",
-            //         image:[],
-            //         longitude:-74.0792,
-            //         latitude:40.7163,
-            //         comments:[],
-            //         petName:"kitty"
-            //     }
-            // ];
             try {
                 await axios.get(
                     `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
                     .then(function (response) {
                         setOriginalData(response.data);
-                        setPagedData(response.data.slice(0,10));
                     })
                     .catch(function (error) {
                         // handle error
@@ -307,8 +119,6 @@ export default function Home() {
 
     }, []);
 
-    console.log(currentUser)
-
 
     useEffect( () => {
         async function changePage(){
@@ -318,7 +128,6 @@ export default function Home() {
                     .then(function (response) {
 
                         setOriginalData(response.data);
-                        setPagedData(response.data.slice(0,10));
                     })
                     .catch(function (error) {
                         // handle error
@@ -346,34 +155,26 @@ export default function Home() {
 
     useEffect( () => {
 
-        if(selectedData === undefined){
-            throw "undefined";
-            //unsolved
+        if(originalData){
+            markerStack.map((ele) => {
+                ele.remove();
+            })
+
+            const newMarkers = [];
+
+            for (let i = 0; i < originalData.length && i < 10; i++) {
+                let temp = new mapboxgl.Marker()
+                    .setLngLat([originalData[i].longitude, originalData[i].latitude ])
+                    .setPopup(new mapboxgl.Popup({  })
+                        .setHTML("<a href='/Detail'><h4>"+originalData[i].title+"</h4></a><p>"+originalData[i].content+"</p>"));
+                temp.addTo(map.current);
+                newMarkers.push(temp);
+            }
+
+            setMarkerStack(newMarkers);
         }
 
-        // let result = [];
-        // let tempData = originalData.slice(10*pagenum-10,10*pagenum);
-        // for(let ele of tempData){
-        //     result.push(ele);
-        // }
-        // setPagedData(result);
 
-        markerStack.map((ele) => {
-            ele.remove();
-        })
-
-        const newMarkers = [];
-
-        for (let i = 0; i < pagedData.length && i < 10; i++) {
-            let temp = new mapboxgl.Marker()
-                .setLngLat([pagedData[i].longitude, pagedData[i].latitude ])
-                .setPopup(new mapboxgl.Popup({  })
-                    .setHTML("<a href='/Detail'><h4>"+pagedData[i].title+"</h4></a><p>"+pagedData[i].content+"</p>"));
-            temp.addTo(map.current);
-            newMarkers.push(temp);
-        }
-
-        setMarkerStack(newMarkers);
 
     }, [originalData]);
 
@@ -388,10 +189,6 @@ export default function Home() {
         return text;
     }
 
-
-    // console.log(originalData);
-    // console.log(selectedData);
-    // console.log(pagedData);
 
 
     return (
@@ -487,7 +284,7 @@ export default function Home() {
 
 
 
-                    <Row className="row">
+                    <Row>
 
 
                         <Col xs="6">
@@ -517,7 +314,7 @@ export default function Home() {
                                         {contentTextTrimer(ele.content)}
                                             </Card.Text>
                                             <Button variant="primary" onClick={()=>{
-                                                navigate("/Detail");
+                                                navigate("/Detail",{state:{postId: ele._id}});
                                             }}>Detail</Button>
                                             </Card.Body>
                                         </Card>
