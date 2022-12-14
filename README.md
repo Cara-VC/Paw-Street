@@ -21,8 +21,12 @@ Redis is an in-memory key-value database. We can store data in RAM and reduce AP
 Firebase Auth provides back-end services. We will use firebase auth to manage users' authentication. 
 
 ## Independent Technologies:
-### 1.NodeMailer
-NodeMailer is a Node.js module that makes email sending easily. We will notify the user who posted a lost/found post that another user has replied to it.
+### 1.ImageMagick
+ImageMagick is free software delivered as a ready-to-run binary distribution. We will use it to process pictures uploaded by users. For example, transform into a smaller size to the same space to make it easy to show as an icon on the map.
+
+Please make sure ImageMagick has already install before running this project on local computer. ImageMagick download here: https://imagemagick.org/script/download.php
+
+Make sure command "magick" could running on the path "/front-end"
 
 ### 2.Mapbox
 MapBox is a JavaScript library that render interactive maps. We will use it to visualize all lost/found pets' information around the user within a range.
