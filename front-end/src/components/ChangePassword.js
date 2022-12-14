@@ -7,7 +7,8 @@ import { Navigate } from "react-router-dom";
 
 function ChangePassword() {
   const auth = getAuth();
-  const currentUser = auth.currentUser;
+  // const currentUser = auth.currentUser;
+  const { currentUser } = useContext(AuthContext);
   const [pwMatch, setPwMatch] = useState("");
   //console.log("changepsed curuser 1", currentUser);
 
@@ -35,7 +36,7 @@ function ChangePassword() {
     }
   };
   //console.log("chagepswd curuser 3", auth.currentUser);
-  if (auth.currentUser === null) {
+  if (currentUser === null) {
     //console.log("chagepswd curuser 3", currentUser.providerData[0].providerId);
     return <Navigate to="/" />;
   }

@@ -2,46 +2,20 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Container, Form, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import axios from "axios";
-import { getAuth } from "firebase/auth";
 import { Navigate } from "react-router-dom";
 import {AuthContext} from '../firebase/Auth';
-import Profile from "./Profile";
+import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 
 function NewPost() {
 
-
     const { currentUser } = useContext(AuthContext);
-
-
-    // console.log(user.uid,user.displayName)
-
-    // const displayName = useRef(user.displayName);
-
-    // useEffect(() => {
-    //
-    //     async function set() {
-    //         try {
-    //
-    //             await uid.current = user.uid;
-    //
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-    //     }
-    //
-    //     set();
-    //
-    // }, []);//////////
-
-    // console.log(uid.current,1)
-    // console.log(user.uid,2)
-
+    const lnglat = useContext(CurrentLocationLngLatContext);
 
     if (currentUser) {
         // console.log(user.uid,1)
     return (
-        <div className="container">
+        <Container>
 
             <h1>New Post</h1>
             <Form>
@@ -89,8 +63,8 @@ function NewPost() {
                         status: document.getElementById("status").value,
                         content: document.getElementById("content").value,
                         image: document.getElementById("image").files,
-                        longitude:-74.0792,
-                        latitude:40.7163,
+                        longitude:lnglat.current[0],
+                        latitude:lnglat.current[1],
                         petName: document.getElementById("petName").value
                     };
                     navigator.geolocation.getCurrentPosition(function(position) {
@@ -121,7 +95,7 @@ function NewPost() {
                     Submit
                 </Button>
             </Form>
-        </div>
+        </Container>
     )
     }else {
         return <Navigate to="/signin" />;

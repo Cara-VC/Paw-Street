@@ -10,7 +10,7 @@ import { getAuth } from "firebase/auth";
 
 function SignIn() {
   const auth = getAuth();
-  const { user } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const handleLogin = async (event) => {
     event.preventDefault();
     let { email, password } = event.target.elements;
@@ -35,7 +35,7 @@ function SignIn() {
       );
     }
   };
-  if (auth.currentUser) {
+  if (currentUser) {
     return <Navigate to="/" />;
   }
   return (

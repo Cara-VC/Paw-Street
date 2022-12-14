@@ -2,40 +2,48 @@ import React, {useContext, useEffect, useState} from "react";
 import SignOutButton from "./SignOut";
 import "../App.css";
 import ChangePassword from "./ChangePassword";
-import { getAuth } from "firebase/auth";
 import { Navigate } from "react-router-dom";
 import {AuthContext} from '../firebase/Auth';
+import {Container} from "react-bootstrap";
+import { doChangePassword, doSignOut } from "../firebase/FirebaseFunctions";
 
 function Profile() {
 
     const { currentUser } = useContext(AuthContext);
-    // const auth = getAuth();
-    // const [loggedIn, setLoggedIn] = useState(true);
-    // const user = auth.currentUser;
-    // useEffect(() => {
-    //     auth.onAuthStateChanged((user) => {
-    //         if (user) {
-    //             setLoggedIn(true);
-    //         } else {
-    //             setLoggedIn(false);
-    //         }
-    //     });
-    // }, []);
-
-    // if (!currentUser) {
-    //     return <Navigate to="/signin" />;
-    // }
-
+    // const [pwMatch, setPwMatch] = useState("");
+    // //console.log("changepsed curuser 1", currentUser);
+    //
+    // const submitForm = async (event) => {
+    //     event.preventDefault();
+    //     const { currentPassword, newPasswordOne, newPasswordTwo } =
+    //         event.target.elements;
+    //
+    //     if (newPasswordOne.value !== newPasswordTwo.value) {
+    //         setPwMatch("New Passwords do not match, please try again");
+    //         return false;
+    //     }
+    //
+    //     try {
+    //         await doChangePassword(
+    //             currentUser.email,
+    //             currentPassword.value,
+    //             newPasswordOne.value
+    //         );
+    //         //console.log("chagepswd curuser 2", auth.currentUser);
+    //         alert("Password has been changed, you will now be logged out");
+    //         await doSignOut();
+    //     } catch (error) {
+    //         alert(error);
+    //     }
+    // };
     if (currentUser) {
-        //console.log("PrivateRouteOutlet");
-
         return(
-            <div className="container">
+            <Container>
                 <h2>Profile</h2>
                 <h3>Hello, {currentUser.displayName}</h3>
                 <ChangePassword />
                 <SignOutButton />
-            </div>
+            </Container>
         );
 
     } else {

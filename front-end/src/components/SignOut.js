@@ -1,15 +1,16 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {doSignOut} from '../firebase/FirebaseFunctions';
 import { Navigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import {AuthContext} from '../firebase/Auth';
+import {Button} from "react-bootstrap";
 
 const SignOutButton = () => {
+    const { currentUser } = useContext(AuthContext);
   return (
 
-          <button type='button' onClick={doSignOut}>
+          <Button variant="secondary" onClick={doSignOut}>
               Sign Out
-          </button>
-
+          </Button>
 
   );
 };
