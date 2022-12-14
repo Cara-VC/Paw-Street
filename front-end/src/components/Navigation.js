@@ -15,18 +15,7 @@ import {NavbarBrand} from "react-bootstrap";
 
 const Navigation = () => {
     const { currentUser } = useContext(AuthContext);
-  // const auth = getAuth();
-  // const [loggedIn, setLoggedIn] = useState(false);
-  //
-  // useEffect(() => {
-  //   auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       setLoggedIn(true);
-  //     } else {
-  //       setLoggedIn(false);
-  //     }
-  //   });
-  // }, []);
+
     if(currentUser){
         return(
             <Navbar bg="light" expand="lg">
@@ -82,55 +71,6 @@ const Navigation = () => {
         );
     }
 
-  // const NavigationAuth = () => {
-  //   return (
-  //       <Navbar bg="light" expand="lg">
-  //         <Container>
-  //             <Navbar.Brand href="/">
-  //                 <img
-  //                     alt=""
-  //                     src="imgs/pawicon.png"
-  //                     width="30"
-  //                     height="30"
-  //                     className="d-inline-block align-top"
-  //                 />{' '}
-  //                 Paw Street
-  //             </Navbar.Brand>
-  //             <Navbar.Toggle aria-controls="basic-navbar-nav" />
-  //             <Navbar.Collapse id="basic-navbar-nav">
-  //             <Nav>
-  //
-  //               <Nav.Link href="/">Home</Nav.Link>
-  //               <Nav.Link href="/MyPosts">My Posts</Nav.Link>
-  //               <Nav.Link href="/Profile">Profile</Nav.Link>
-  //               <Nav.Link href="/NewPost">New Post</Nav.Link>
-  //               <Nav.Link href="/Detail">temp</Nav.Link>
-  //               <Nav.Link href="/Edit">temp2</Nav.Link>
-  //             </Nav>
-  //             </Navbar.Collapse>
-  //
-  //         </Container>
-  //       </Navbar>
-  //   );
-  // };
-  //
-  // const NavigationNonAuth = () => {
-  //   return (
-  //       <Navbar bg="light" expand="lg">
-  //         <Container>
-  //             <Nav>
-  //               <Nav.Link href="/">Home</Nav.Link>
-  //               <Nav.Link href="/SignIn">Sign In</Nav.Link>
-  //               <Nav.Link href="/SignUp">Sign Up</Nav.Link>
-  //               <Nav.Link href="/Detail">temp</Nav.Link>
-  //             </Nav>
-  //         </Container>
-  //       </Navbar>
-  //   );
-  // };
-  //
-  // if (currentUser) return <NavigationAuth />;
-  // else return <NavigationNonAuth />;
 
 };
 export default Navigation;

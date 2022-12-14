@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c56f9cc8-c8ae-4642-9b0f-f4f1c11f6dd9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/data/posts.js" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/data/posts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/routes/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/routes/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/public/index.html" afterDir="false" />
@@ -17,6 +19,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/front-end" />
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/front-end/package.json" />
   </component>
   <component name="ProjectId" id="2IsZUcOl4vuh2W5AFxzk2Nzwce5" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">

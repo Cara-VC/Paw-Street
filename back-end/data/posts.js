@@ -124,7 +124,7 @@ module.exports = {
     }
   },
 
-  async getPostByUserId(userId) {
+  async getPostByUserId(userId,pagenum) {
     try {
       const postsCollection = await postsCollections();
       const postsByUserId = await postsCollection
@@ -135,7 +135,8 @@ module.exports = {
       for (let post of postsByUserId) {
         post._id = post._id.toString();
       }
-      return postsByUserId;
+      let result = postsByUserId.slice(10 * pagenum - 10, 10 * pagenum);
+      return result;
     } catch (e) {
       console.log(e);
       throw e;

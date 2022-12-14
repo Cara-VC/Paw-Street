@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
+
 export default function MyPosts() {
 
     const { currentUser } = useContext(AuthContext);
@@ -24,10 +25,12 @@ export default function MyPosts() {
         .setLngLat(lnglat.current)
         .setPopup(popup1);
 
+
+
     const navigate = useNavigate();
     const [pagenum, setPagenum] = useState(1);
+    const [nextPage, setNextPage] = useState(false);
     const [originalData, setOriginalData] = useState([]);
-    const [pagedData, setPagedData] = useState([]);
     const [markerStack, setMarkerStack] = useState([]);
 
     useEffect(() => {
@@ -56,204 +59,29 @@ export default function MyPosts() {
 
         async function fetchData() {
             try {
-                let originalFakeData = [
-                    {
-                        id:1,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"story",
-                        content:"this is story 1 and the rest of this is useless blahblahblahblahblahblahblahblahblahblahblahblahblah" +
-                            "blahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblah",
-                        image:[],
-                        longitude:-74.0290,
-                        latitude:40.7448,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:2,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"found",
-                        content:"this is found 2",
-                        image:[],
-                        longitude:-74.0266,
-                        latitude:40.7514,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:3,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 3",
-                        image:[],
-                        longitude:-74.0244,
-                        latitude:40.7542,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:4,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 4",
-                        image:[],
-                        longitude:-74.0271,
-                        latitude:40.7483,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:5,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 5",
-                        image:[],
-                        longitude:-74.0276,
-                        latitude:40.7388,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:6,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 6",
-                        image:[],
-                        longitude:-73.9982,
-                        latitude:40.7358,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:7,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 7",
-                        image:[],
-                        longitude:-74.0023,
-                        latitude:40.7520,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:8,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 8",
-                        image:[],
-                        longitude:-74.0010,
-                        latitude:40.7594,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:9,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 9",
-                        image:[],
-                        longitude:-73.9970,
-                        latitude:40.7335,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:10,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 10",
-                        image:[],
-                        longitude:-74.0088,
-                        latitude:40.7146,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:11,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 11",
-                        image:[],
-                        longitude:-73.9978,
-                        latitude:40.6863,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:12,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 12",
-                        image:[],
-                        longitude:-73.9758,
-                        latitude:40.6916,
-                        comments:[],
-                        petName:"kitty"
-                    },
-                    {
-                        id:13,
-                        title:"I love my kitty",
-                        time:1670443903704,
-                        userName:"John",
-                        userId:1,
-                        status:"lost",
-                        content:"this is lost 13",
-                        image:[],
-                        longitude:-74.0792,
-                        latitude:40.7163,
-                        comments:[],
-                        petName:"kitty"
-                    }
-                ];
-                await setOriginalData(originalFakeData);
-                await setPagedData(originalFakeData.slice(0,10));
-                // await axios.get(
-                //     `http://localhost:4000/posts/${currentUser.uid}?pagenum=${pagenum}`)
-                //     .then(function (response) {
-                //         setOriginalData(response.data);
-                //         setPagedData(response.data.slice(0,10));
-                //         console.log(response.data);
-                //     })
-                //     .catch(function (error) {
-                //         // handle error
-                //         console.log(error);
-                //     });
+                await axios.get(
+
+                    `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum}`)
+                    .then(function (response) {
+                        setOriginalData(response.data);
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+                await axios.get(
+                    `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum+1}`)
+                    .then(function (response) {
+                        if(response.data.length != 0){
+                            setNextPage(true);
+                        }else{
+                            setNextPage(false);
+                        }
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
 
                 await navigator.geolocation.getCurrentPosition(function(position) {
 
@@ -270,40 +98,63 @@ export default function MyPosts() {
         fetchData();
 
     }, []);
+    useEffect( () => {
+        async function changePage(){
+            try{
+                await axios.get(
+                    `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum}`)
+                    .then(function (response) {
 
+                        setOriginalData(response.data);
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+                await axios.get(
+                    `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum+1}`)
+                    .then(function (response) {
+                        if(response.data.length != 0){
+                            setNextPage(true);
+                        }else{
+                            setNextPage(false);
+                        }
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+            }catch (e){
+                console.log(e);
+            }
+        }
+        changePage();
+    }, [pagenum]);
 
     useEffect( () => {
 
-        if(originalData === undefined){
-            throw "undefined";
-            //unsolved
+        if(originalData){
+            markerStack.map((ele) => {
+                ele.remove();
+            })
+
+            const newMarkers = [];
+
+            for (let i = 0; i < originalData.length && i < 10; i++) {
+                let temp = new mapboxgl.Marker()
+                    .setLngLat([originalData[i].longitude, originalData[i].latitude ])
+                    .setPopup(new mapboxgl.Popup({  })
+                        .setHTML("<a href='/Detail'><h4>"+originalData[i].title+"</h4></a><p>"+originalData[i].content+"</p>"));
+                temp.addTo(map.current);
+                newMarkers.push(temp);
+            }
+
+            setMarkerStack(newMarkers);
         }
 
-        let result = [];
-        let tempData = originalData.slice(10*pagenum-10,10*pagenum);
-        for(let ele of tempData){
-            result.push(ele);
-        }
 
-        setPagedData(result);
 
-        markerStack.map((ele) => {
-            ele.remove();
-        })
-
-        const newMarkers = [];
-
-        for (let i = 0; i < pagedData.length && i < 10; i++) {
-            let temp = new mapboxgl.Marker()
-                .setLngLat([pagedData[i].longitude, pagedData[i].latitude ])
-                .setPopup(new mapboxgl.Popup({  })
-                    .setHTML("<a href='/Detail'><h4>"+pagedData[i].title+"</h4></a><p>"+pagedData[i].content+"</p>"));
-            temp.addTo(map.current);
-            newMarkers.push(temp);
-        }
-
-        setMarkerStack(newMarkers);
-    }, [pagenum,originalData]);
+    }, [originalData]);
 
     const handlePageChange = (event, value) => {
         setPagenum(value);
@@ -317,7 +168,7 @@ export default function MyPosts() {
         }
         return text;
     }
-    if(currentUser){
+
 
         return (
             <Container>
@@ -334,21 +185,25 @@ export default function MyPosts() {
                                         <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}}/>
                                 }
                                 <Pagination.Item active>{pagenum}</Pagination.Item>
-                                <Pagination.Ellipsis />
-                                <Pagination.Item onClick={()=>{setPagenum(Math.ceil(originalData.length / 10))}}>{Math.ceil(originalData.length / 10)}</Pagination.Item>
+                                {/*<Pagination.Ellipsis />*/}
+                                {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
                                 {
-                                    pagenum === Math.ceil(originalData.length / 10) ?
-                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
+                                    // pagenum === Math.ceil(originalData.length / 10) ?
+                                    nextPage == true?
+                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} />
                                         :
-                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}}/>
+                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
                                 }
-                                <Pagination.Last onClick={()=>{setPagenum(Math.ceil(originalData.length / 10))}}/>
+                                {/*<Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>*/}
                             </Pagination>
                         </div>
 
 
                         <Row>
-                            {pagedData.map((ele) => {
+                            {
+                                !originalData ? null :
+
+                                originalData.map((ele) => {
                                 return (
 
                                     <Card className="square border border-5"
@@ -370,10 +225,10 @@ export default function MyPosts() {
                                                 {contentTextTrimer(ele.content)}
                                             </Card.Text>
                                             <Button variant="primary" onClick={()=>{
-                                                navigate("/Detail");
+                                                navigate("/Detail",{state:{postId: ele._id}});
                                             }}>Detail</Button>
                                             <Button variant="primary" onClick={()=>{
-                                                navigate("/Detail");
+                                                navigate("/Edit");
                                             }}>Edit</Button>
                                             <Button variant="primary" onClick={()=>{
 
@@ -393,14 +248,6 @@ export default function MyPosts() {
                 }
             </Container>
         )
-    }
-    else{
-        return (
-            <Container>
-                <h1>Log in first</h1>
-            </Container>
 
 
-        );
-    }
 }
