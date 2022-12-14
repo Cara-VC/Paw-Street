@@ -5,6 +5,7 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 import ReactMapGL, { Map, Marker } from 'react-map-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import {AuthContext} from '../firebase/Auth';
+import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -50,19 +51,23 @@ export default function Detail() {
     const map = useRef(null);
     const [lng, setLng] = useState(-74.0254848);
     const [lat, setLat] = useState(40.7446316);
-    const [curMarkerLngLat, setCurMarkerLngLat] = useState([lng, lat]);
+    const lnglat = useContext(CurrentLocationLngLatContext);
+    // const [curMarkerLngLat, setCurMarkerLngLat] = useState([lng, lat]);
     const [zoom, setZoom] = useState(9);
+    const popup1 = new mapboxgl.Popup({ offset: 25 })
+        .setHTML("<h1>Your current location</h1>");
     const currentLocationMarker = new mapboxgl.Marker()
-        .setLngLat(curMarkerLngLat);
-    const marker = new mapboxgl.Marker()
-        .setLngLat([originalData.longitude, originalData.latitude]);
+        .setLngLat(lnglat.current)
+        .setPopup(popup1)
+    // const marker = new mapboxgl.Marker()
+    //     .setLngLat([originalData.longitude, originalData.latitude]);
 
 
-    useEffect(() => {
-        console.log(2,curMarkerLngLat)
-        currentLocationMarker.setLngLat(curMarkerLngLat);
-
-    }, [curMarkerLngLat])
+    // useEffect(() => {
+    //     console.log(2,curMarkerLngLat)
+    //     currentLocationMarker.setLngLat(curMarkerLngLat);
+    //
+    // }, [curMarkerLngLat])
 
     useEffect(() => {
 
@@ -103,11 +108,15 @@ export default function Detail() {
             try {
                 await setOriginalData(singleFakeData);
                 await navigator.geolocation.getCurrentPosition(function(position) {
-                    console.log("Latitude is :", position.coords.latitude);
-                    console.log("Longitude is :", position.coords.longitude);
-                    console.log("123",curMarkerLngLat);
-                    setCurMarkerLngLat([position.coords.longitude,position.coords.latitude]);
-                    currentLocationMarker.setLngLat(curMarkerLngLat);
+
+                    lnglat.current=[position.coords.longitude, position.coords.latitude];
+                    currentLocationMarker.setLngLat(lnglat.current);
+                    const marker = new mapboxgl.Marker()
+                        .setLngLat([originalData.longitude, originalData.latitude])
+                        .setPopup((new mapboxgl.Popup({ offset: 25 })
+                            .setHTML("<h4>"+originalData.title+"</h4><p>"+originalData.content+"</p>")));
+                    marker.addTo(map.current);
+
                 });
             } catch (e) {
                 console.log(e);
@@ -127,7 +136,7 @@ export default function Detail() {
             center: [lng, lat],
             zoom: zoom
         });
-        marker.addTo(map.current);
+        // marker.addTo(map.current);
 
         currentLocationMarker.addTo(map.current);
 

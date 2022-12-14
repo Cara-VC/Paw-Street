@@ -7,6 +7,7 @@ import axios from 'axios';
 import ModalContext from "react-bootstrap/ModalContext";
 import Modal from 'react-bootstrap/Modal';
 import {AuthContext} from '../firebase/Auth';
+import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 export default function MyPosts() {
 
@@ -16,10 +17,11 @@ export default function MyPosts() {
     const [lng, setLng] = useState(-74.0254848);
     const [lat, setLat] = useState(40.7446316);
     const [zoom, setZoom] = useState(9);
+    const lnglat = useContext(CurrentLocationLngLatContext);
     const popup1 = new mapboxgl.Popup({ offset: 25 })
-        .setHTML("<h1>Hello World!</h1><a>Nav</a>");
+        .setHTML("<h1>Your current location</h1>");
     const currentLocationMarker = new mapboxgl.Marker()
-        .setLngLat([lng,lat])
+        .setLngLat(lnglat.current)
         .setPopup(popup1);
 
     const navigate = useNavigate();
@@ -254,11 +256,10 @@ export default function MyPosts() {
                 //     });
 
                 await navigator.geolocation.getCurrentPosition(function(position) {
-                    // console.log("Latitude is :", position.coords.latitude);
-                    // console.log("Longitude is :", position.coords.longitude);
-                    setLng(position.coords.longitude);
-                    setLat(position.coords.latitude);
-                    currentLocationMarker.setLngLat([lng,lat]);
+
+                    lnglat.current=[position.coords.longitude, position.coords.latitude];
+                    currentLocationMarker.setLngLat(lnglat.current);
+
                 });
 
             } catch (e) {
