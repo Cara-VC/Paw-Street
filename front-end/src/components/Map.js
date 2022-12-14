@@ -18,6 +18,9 @@ export default function Map() {
   const marker1 = new mapboxgl.Marker()
     .setLngLat([-73.03, 41.75])
     .setPopup(popup1);
+  const marker2 = new mapboxgl.Marker()
+    .setLngLat([-73.13, 41.55])
+    .setPopup(popup1);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -28,6 +31,7 @@ export default function Map() {
       zoom: zoom,
     });
     marker1.addTo(map.current);
+    marker2.addTo(map.current);
   });
 
   useEffect(() => {

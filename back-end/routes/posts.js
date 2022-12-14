@@ -17,7 +17,6 @@ const checker = require("../public/util");
 // }
 // main()
 
-
 //get all posts
 router.get("/", async (req, res) => {
   console.log("get /posts");
@@ -31,9 +30,8 @@ router.get("/", async (req, res) => {
 
 //unfinished
 router.get("/:longitude/:latitude", async (req, res) => {
-  console.log("get /posts1");
+  console.log("get /:longitude/:latitude");
   try {
-
     let longitude = req.params.longitude;
     let latitude = req.params.latitude;
     let pagenum = req.query.pagenum;
@@ -43,8 +41,16 @@ router.get("/:longitude/:latitude", async (req, res) => {
     let distance = req.query.distance;
     let time = req.query.time;
 
-
-    const allPosts = await posts.getPostsWithParams(longitude, latitude, pagenum, story, found, lost, distance, time);
+    const allPosts = await posts.getPostsWithParams(
+      longitude,
+      latitude,
+      pagenum,
+      story,
+      found,
+      lost,
+      distance,
+      time
+    );
     res.json(allPosts);
   } catch (e) {
     res.status(500).json({ message: e });
