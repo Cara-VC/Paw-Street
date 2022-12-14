@@ -37,9 +37,9 @@ Please make sure ImageMagick has already install before running this project on 
 
 Make sure command "magick" could running on the path "/front-end"
 
-### 2.Mapbox
+### 2.AWS
 
-MapBox is a JavaScript library that render interactive maps. We will use it to visualize all lost/found pets' information around the user within a range.
+We will use AWS as cloud platform and deploy the website on cloud. 
 
 ## Backend APIs
 
