@@ -18,8 +18,7 @@ async function doCreateUserWithEmailAndPassword(email, password, displayName) {
     .then((userCredential) => {
       // Signed in
       const user = userCredential.user;
-      //updateProfile(user, { displayName: displayName });
-      // ...
+      updateProfile(user, { displayName: displayName });
     })
     .catch((error) => {
       const errorCode = error.code;
