@@ -317,80 +317,90 @@ export default function MyPosts() {
         }
         return text;
     }
+    if(currentUser){
 
-
-    return (
-        <Container>
-            <h1>My Posts</h1>
-            {!originalData ? null :
-                <div>
+        return (
+            <Container>
+                <h1>My Posts</h1>
+                {!originalData ? null :
                     <div>
-                        <Pagination>
-                            <Pagination.First onClick={()=>{setPagenum(1)}} />
-                            {
-                                pagenum === 1 ?
-                                    <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}} disabled/>
-                                    :
-                                    <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}}/>
+                        <div>
+                            <Pagination>
+                                <Pagination.First onClick={()=>{setPagenum(1)}} />
+                                {
+                                    pagenum === 1 ?
+                                        <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}} disabled/>
+                                        :
+                                        <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}}/>
+                                }
+                                <Pagination.Item active>{pagenum}</Pagination.Item>
+                                <Pagination.Ellipsis />
+                                <Pagination.Item onClick={()=>{setPagenum(Math.ceil(originalData.length / 10))}}>{Math.ceil(originalData.length / 10)}</Pagination.Item>
+                                {
+                                    pagenum === Math.ceil(originalData.length / 10) ?
+                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
+                                        :
+                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}}/>
+                                }
+                                <Pagination.Last onClick={()=>{setPagenum(Math.ceil(originalData.length / 10))}}/>
+                            </Pagination>
+                        </div>
+
+
+                        <Row>
+                            {pagedData.map((ele) => {
+                                return (
+
+                                    <Card className="square border border-5"
+                                          style={{ width: '25rem' }}
+                                          border={ ele.status === 'lost' ? "danger" : ele.status === 'found' ? "primary" : "success" }>
+                                        <Card.Header>{ele.status.toUpperCase()}</Card.Header>
+                                        <Card.Img variant="top" src="cat.jpeg" />
+                                        <Card.Body>
+                                            <Card.Title>{ele.title}</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">Posted by {ele.userName} at {
+                                                new Date(ele.time).getDate()+
+                                                "/"+(new Date(ele.time).getMonth()+1)+
+                                                "/"+new Date(ele.time).getFullYear()+
+                                                " "+new Date(ele.time).getHours()+
+                                                ":"+new Date(ele.time).getMinutes()+
+                                                ":"+new Date(ele.time).getSeconds()
+                                            }</Card.Subtitle>
+                                            <Card.Text>
+                                                {contentTextTrimer(ele.content)}
+                                            </Card.Text>
+                                            <Button variant="primary" onClick={()=>{
+                                                navigate("/Detail");
+                                            }}>Detail</Button>
+                                            <Button variant="primary" onClick={()=>{
+                                                navigate("/Detail");
+                                            }}>Edit</Button>
+                                            <Button variant="primary" onClick={()=>{
+
+                                            }}>Delete</Button>
+                                        </Card.Body>
+                                    </Card>
+                                )
+                            })
                             }
-                            <Pagination.Item active>{pagenum}</Pagination.Item>
-                            <Pagination.Ellipsis />
-                            <Pagination.Item onClick={()=>{setPagenum(Math.ceil(originalData.length / 10))}}>{Math.ceil(originalData.length / 10)}</Pagination.Item>
-                            {
-                                pagenum === Math.ceil(originalData.length / 10) ?
-                                    <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
-                                    :
-                                    <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}}/>
-                            }
-                            <Pagination.Last onClick={()=>{setPagenum(Math.ceil(originalData.length / 10))}}/>
-                        </Pagination>
+                        </Row>
+
+                        <div className="col-6 col-sm-4">
+                            <div ref={mapContainer} className="map-container" />
+                            <div className="sidebar">Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}</div>
+                        </div>
                     </div>
+                }
+            </Container>
+        )
+    }
+    else{
+        return (
+            <Container>
+                <h1>Log in first</h1>
+            </Container>
 
 
-                    <Row>
-                        {pagedData.map((ele) => {
-                            return (
-
-                                <Card className="square border border-5"
-                                      style={{ width: '25rem' }}
-                                      border={ ele.status === 'lost' ? "danger" : ele.status === 'found' ? "primary" : "success" }>
-                                    <Card.Header>{ele.status.toUpperCase()}</Card.Header>
-                                    <Card.Img variant="top" src="cat.jpeg" />
-                                    <Card.Body>
-                                        <Card.Title>{ele.title}</Card.Title>
-                                        <Card.Subtitle className="mb-2 text-muted">Posted by {ele.userName} at {
-                                            new Date(ele.time).getDate()+
-                                            "/"+(new Date(ele.time).getMonth()+1)+
-                                            "/"+new Date(ele.time).getFullYear()+
-                                            " "+new Date(ele.time).getHours()+
-                                            ":"+new Date(ele.time).getMinutes()+
-                                            ":"+new Date(ele.time).getSeconds()
-                                        }</Card.Subtitle>
-                                        <Card.Text>
-                                            {contentTextTrimer(ele.content)}
-                                        </Card.Text>
-                                        <Button variant="primary" onClick={()=>{
-                                            navigate("/Detail");
-                                        }}>Detail</Button>
-                                        <Button variant="primary" onClick={()=>{
-                                            navigate("/Detail");
-                                        }}>Edit</Button>
-                                        <Button variant="primary" onClick={()=>{
-
-                                        }}>Delete</Button>
-                                    </Card.Body>
-                                </Card>
-                            )
-                        })
-                        }
-                    </Row>
-
-                    <div className="col-6 col-sm-4">
-                        <div ref={mapContainer} className="map-container" />
-                        <div className="sidebar">Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}</div>
-                    </div>
-                </div>
-            }
-        </Container>
-    )
+        );
+    }
 }
