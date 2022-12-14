@@ -6,6 +6,7 @@ import SignOutButton from "./SignOut";
 import "../App.css";
 import {Pagination, Card, Button, Container, Row, Form, Col, Stack} from "react-bootstrap";
 
+
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -130,5 +131,6 @@ const Navigation = () => {
   //
   // if (currentUser) return <NavigationAuth />;
   // else return <NavigationNonAuth />;
+
 };
 export default Navigation;

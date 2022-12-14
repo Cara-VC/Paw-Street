@@ -2,51 +2,56 @@ const mongoCollections = require("../config/mongoCollections");
 const postsCollections = mongoCollections.posts;
 const checker = require("../public/util");
 const { ObjectId } = require("mongodb");
-const geolib = require("geolib")
+const geolib = require("geolib");
 // const { getPreciseDistance } from 'geolib';
 //const { post } = require("../routes/posts");
-function checkStatus(singleData,story,lost,found){
-  if(singleData.status == "story" && story == "true"){
+function checkStatus(singleData, story, lost, found) {
+  if (singleData.status == "story" && story == "true") {
     return true;
   }
-  if(singleData.status == "lost" && lost == "true"){
+  if (singleData.status == "lost" && lost == "true") {
     return true;
   }
-  if(singleData.status == "found" && found == "true"){
-    return true;
-  }
-  return false;
-}
-
-function checkTime(singleData,time){
-  let difference = (new Date().getTime()) - singleData.time;
-  if(time == "all"){
-    return true;
-  }
-  if(difference/1000/60/60/24 <= 7 && time == "oneWeek"){
-    return true;
-  }
-  if(difference/1000/60/60/24 <= 30 && time == "oneMonth"){
-    return true;
-  }
-  if(difference/1000/60/60/24 <= 90 && time == "threeMonths"){
+  if (singleData.status == "found" && found == "true") {
     return true;
   }
   return false;
 }
 
-function checkDistance(singleData,curLongitude, curLatitude, distance){
-  let tempDistance = geolib.getPreciseDistance({ latitude: curLatitude, longitude: curLongitude },
-      { latitude: singleData.latitude, longitude: singleData.longitude }) / 1000 / 1.6;
-  if(distance == "1" && tempDistance <= 1){
+function checkTime(singleData, time) {
+  let difference = new Date().getTime() - singleData.time;
+  if (time == "all") {
     return true;
-  }else if(distance == "2" && tempDistance <= 5){
+  }
+  if (difference / 1000 / 60 / 60 / 24 <= 7 && time == "oneWeek") {
     return true;
-  }else if(distance == "3" && tempDistance <= 10){
+  }
+  if (difference / 1000 / 60 / 60 / 24 <= 30 && time == "oneMonth") {
     return true;
-  }else if(distance == "4" && tempDistance <= 50){
+  }
+  if (difference / 1000 / 60 / 60 / 24 <= 90 && time == "threeMonths") {
     return true;
-  }else if(distance == "5"){
+  }
+  return false;
+}
+
+function checkDistance(singleData, curLongitude, curLatitude, distance) {
+  let tempDistance =
+    geolib.getPreciseDistance(
+      { latitude: curLatitude, longitude: curLongitude },
+      { latitude: singleData.latitude, longitude: singleData.longitude }
+    ) /
+    1000 /
+    1.6;
+  if (distance == "1" && tempDistance <= 1) {
+    return true;
+  } else if (distance == "2" && tempDistance <= 5) {
+    return true;
+  } else if (distance == "3" && tempDistance <= 10) {
+    return true;
+  } else if (distance == "4" && tempDistance <= 50) {
+    return true;
+  } else if (distance == "5") {
     return true;
   }
   return false;
@@ -61,7 +66,7 @@ module.exports = {
     image,
     longitude,
     latitude,
-    petName,
+    petName
   ) {
     userName = checker.checkUsername(userName);
     userId = checker.checkUserId(userId);
@@ -118,8 +123,36 @@ module.exports = {
       //await postsCollection.closeConnection();
     }
   },
-//unfinished
-  async getPostsWithParams(longitude, latitude, pagenum, story, found, lost, distance, time) {
+
+  async getPostByUserId(userId) {
+    try {
+      const postsCollection = await postsCollections();
+      const postsByUserId = await postsCollection
+        .find({ userId: userId })
+        .toArray();
+      if (!postsByUserId) throw `No post by userId ${userId}`;
+      //console.log(postsByUserId);
+      for (let post of postsByUserId) {
+        post._id = post._id.toString();
+      }
+      return postsByUserId;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+
+  //unfinished
+  async getPostsWithParams(
+    longitude,
+    latitude,
+    pagenum,
+    story,
+    found,
+    lost,
+    distance,
+    time
+  ) {
     try {
       const postsCollection = await postsCollections();
       const allPosts = await postsCollection.find({}).toArray();
@@ -128,12 +161,16 @@ module.exports = {
         allPosts[i]._id = allPosts[i]._id.toString();
       }
       let result = [];
-      for(let ele of allPosts){
-        if(checkTime(ele,time) && checkStatus(ele,story,lost,found) && checkDistance(ele,longitude,latitude,distance)){
+      for (let ele of allPosts) {
+        if (
+          checkTime(ele, time) &&
+          checkStatus(ele, story, lost, found) &&
+          checkDistance(ele, longitude, latitude, distance)
+        ) {
           result.push(ele);
         }
       }
-      result = result.slice(10*pagenum-10,10*pagenum)
+      result = result.slice(10 * pagenum - 10, 10 * pagenum);
       console.log(result);
       return result;
     } catch (e) {
@@ -285,7 +322,3 @@ module.exports = {
     return await this.getPostById(postId);
   },
 };
-
-
-
-

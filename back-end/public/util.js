@@ -36,6 +36,11 @@ function checkPostId(postId) {
   return postId;
 }
 
+function checkUserId(userId) {
+  if (!userId) throw "Empty userId.";
+  return userId;
+}
+
 function checkComment(comment) {
   if (typeof comment != "string") throw "comment must be a string.";
   if (comment.trim().length == 0)
@@ -51,4 +56,5 @@ module.exports = {
   checkContent,
   checkPostId,
   checkComment,
+  checkUserId,
 };
