@@ -6,9 +6,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { getPreciseDistance } from 'geolib';
 import axios from 'axios';
 import {AuthContext} from '../firebase/Auth';
+import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
-
-export const currentLngLat = React.createContext();
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -20,18 +19,19 @@ export default function Home() {
     const map = useRef(null);
     const [lng, setLng] = useState(-74.0254848);
     const [lat, setLat] = useState(40.7446316);
-    const markerLngLat = useRef([-74.0254848,40.7446316]);
+    const lnglat = useContext(CurrentLocationLngLatContext);
 
     const [zoom, setZoom] = useState(9);
     const popup1 = new mapboxgl.Popup({ offset: 25 })
-        .setHTML("<h1>Hello World!</h1><a>Nav</a>");
+        .setHTML("<h1>Your current location</h1>");
     const currentLocationMarker = new mapboxgl.Marker()
-        .setLngLat(markerLngLat.current)
+        .setLngLat(lnglat.current)
         .setPopup(popup1);
 
     const navigate = useNavigate();
     const [markerStack, setMarkerStack] = useState([]);
     const [pagenum, setPagenum] = useState(1);
+    const [nextPage, setNextPage] = useState(false);
     const [originalData, setOriginalData] = useState([]);
     const [selectedData, setSelectedData] = useState([]);
     const [pagedData, setPagedData] = useState([]);
@@ -50,7 +50,6 @@ export default function Home() {
         found:true,
         time:"all"
     });
-
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -266,10 +265,23 @@ export default function Home() {
             ];
             try {
                 await axios.get(
-                    `http://localhost:4000/posts/${markerLngLat.current[0]}/${markerLngLat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
+                    `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
                     .then(function (response) {
                         setOriginalData(response.data);
                         setPagedData(response.data.slice(0,10));
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+                await axios.get(
+                    `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum+1}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
+                    .then(function (response) {
+                        if(response.data.length != 0){
+                            setNextPage(true);
+                        }else{
+                            setNextPage(false);
+                        }
                     })
                     .catch(function (error) {
                         // handle error
@@ -280,13 +292,10 @@ export default function Home() {
                 // await setSelectedData(originalFakeData);
                 // await setPagedData(originalFakeData.slice(0,10));
                 await navigator.geolocation.getCurrentPosition(function(position) {
-                    // console.log("Latitude is :", position.coords.latitude);
-                    // console.log("Longitude is :", position.coords.longitude);
-                    // setLng(position.coords.longitude);
-                    // setLat(position.coords.latitude);
-                    // currentLocationMarker.setLngLat([lng,lat]);
-                    markerLngLat.current = [position.coords.longitude, position.coords.latitude];
-                    currentLocationMarker.setLngLat(markerLngLat.current);
+
+                    lnglat.current=[position.coords.longitude, position.coords.latitude];
+                    currentLocationMarker.setLngLat(lnglat.current);
+
                 });
 
             } catch (e) {
@@ -319,11 +328,24 @@ export default function Home() {
         async function changePage(){
             try{
                 await axios.get(
-                    `http://localhost:4000/posts/${markerLngLat.current[0]}/${markerLngLat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
+                    `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
                     .then(function (response) {
+
                         setOriginalData(response.data);
                         setPagedData(response.data.slice(0,10));
-                        console.log(pagenum);
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    });
+                await axios.get(
+                    `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum+1}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
+                    .then(function (response) {
+                        if(response.data.length != 0){
+                            setNextPage(true);
+                        }else{
+                            setNextPage(false);
+                        }
                     })
                     .catch(function (error) {
                         // handle error
@@ -343,12 +365,12 @@ export default function Home() {
             //unsolved
         }
 
-        let result = [];
-        let tempData = originalData.slice(10*pagenum-10,10*pagenum);
-        for(let ele of tempData){
-            result.push(ele);
-        }
-        setPagedData(result);
+        // let result = [];
+        // let tempData = originalData.slice(10*pagenum-10,10*pagenum);
+        // for(let ele of tempData){
+        //     result.push(ele);
+        // }
+        // setPagedData(result);
 
         markerStack.map((ele) => {
             ele.remove();
@@ -414,7 +436,7 @@ export default function Home() {
     }
 
     function checkDistance(singleData){
-        let distance = getPreciseDistance({ latitude: markerLngLat.current[1], longitude: markerLngLat.current[0] },
+        let distance = getPreciseDistance({ latitude: lnglat.current[1], longitude: lnglat.current[0] },
             { latitude: singleData.latitude, longitude: singleData.longitude }) / 1000 / 1.6;
         if(filter.distance == "1" && distance <= 1){
             return true;
@@ -438,7 +460,7 @@ export default function Home() {
     return (
         <div className="container justify-content-center">
             <h1>Home</h1>
-            {!selectedData ? null :
+            {!originalData ? null :
                 <div className="row">
 
 
@@ -452,15 +474,16 @@ export default function Home() {
                                     <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}}/>
                             }
                             <Pagination.Item active>{pagenum}</Pagination.Item>
-                            <Pagination.Ellipsis />
-                            <Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>
+                            {/*<Pagination.Ellipsis />*/}
+                            {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
                             {
-                                pagenum === Math.ceil(selectedData.length / 10) ?
-                                    <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
+                                // pagenum === Math.ceil(originalData.length / 10) ?
+                                nextPage == true?
+                                    <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} />
                                     :
-                                    <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}}/>
+                                    <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
                             }
-                            <Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>
+                            {/*<Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>*/}
                         </Pagination>
                     </div>
 
@@ -523,12 +546,6 @@ export default function Home() {
                                     lost: tempLost,
                                     time: tempTime
                                 });
-                                // setFilter({distance: tempDistance,
-                                //                     story: tempStory,
-                                //                     found: tempFound,
-                                //                     lost: tempLost,
-                                //                     time: tempTime
-                                // });
 
                             }}>submit filter</Button>
 
@@ -540,9 +557,9 @@ export default function Home() {
 
                         <div className="col-6 col-sm-4">
                             {
-                                !pagedData ? null :
+                                !originalData ? null :
 
-                                pagedData.map((ele) => {
+                                originalData.map((ele) => {
 
                                     // console.log([ele.longitude, ele.latitude ], markerStack);
                                     return (
