@@ -8,6 +8,7 @@ import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
 
 
 export default function Detail() {
@@ -18,6 +19,12 @@ export default function Detail() {
     const [originalData, setOriginalData] = useState();
     const mapContainer = useRef(null);
     const map = useRef(null);
+
+    const [update, setUpdate] = useState(1);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const [lng, setLng] = useState(-74.0254848);
     const [lat, setLat] = useState(40.7446316);
@@ -126,12 +133,13 @@ export default function Detail() {
             const marker = new mapboxgl.Marker()
                 .setLngLat([originalData.longitude, originalData.latitude])
                 .setPopup((new mapboxgl.Popup({ offset: 25 })
-                    .setHTML("<h4>"+originalData.title+"</h4><p>"+originalData.content+"</p>")));
+                    .setHTML("<Container><h1>"+originalData.title+"</h1><p>"+originalData.content+"</p></Container>")));
             marker.addTo(map.current);
         }
     },[originalData]);
 
     if(location.state){
+
         return (
 
             <Container>
@@ -139,14 +147,16 @@ export default function Detail() {
                     !originalData ? null :
                         <div>
 
-
                             <Card className="square border border-5"
                                   style={{ width: '40rem' }}
                                   border={ originalData.status === 'lost' ? "danger" : originalData.status === 'found' ? "primary" : "success" }>
-                                <Card.Header>{originalData.status.toUpperCase()}</Card.Header>
+                                <Card.Header className="text-center">{originalData.status.toUpperCase()}</Card.Header>
                                 <Card.Img variant="top" src="cat.jpeg" />
                                 <Card.Body>
                                     <Card.Title>{originalData.title}</Card.Title>
+                                    <Card.Subtitle className="mb-2 text-muted text-end">Pet Name:
+                                        {originalData.petName}
+                                    </Card.Subtitle>
                                     <Card.Subtitle className="mb-2 text-muted text-end">Posted by {originalData.userName} at {
                                         new Date(originalData.time).getDate()+
                                         "/"+(new Date(originalData.time).getMonth()+1)+
@@ -155,29 +165,86 @@ export default function Detail() {
                                         ":"+new Date(originalData.time).getMinutes()+
                                         ":"+new Date(originalData.time).getSeconds()
                                     }</Card.Subtitle>
-                                    <Card.Subtitle className="mb-2 text-muted">
-                                        {originalData.petName}
-                                    </Card.Subtitle>
+
                                     <Card.Text>
                                         {originalData.content}
                                     </Card.Text>
-                                    <Button variant="primary" onClick={()=>{
-                                        navigate("/Detail");
-                                    }}>Edit</Button>
-                                    <Button variant="primary" onClick={()=>{
+                                    {/*<Button variant="primary" onClick={()=>{*/}
+                                    {/*    navigate("/Edit",{state:{postId: location.state.postId}});*/}
+                                    {/*    }}>Edit</Button>*/}
 
-                                    }}>Delete</Button>
+                                    {/*<Button variant="primary" onClick={()=>{*/}
+
+                                    {/*    }}>Delete</Button>*/}
+                                    {currentUser && currentUser.uid == originalData.userId ? (
+                                        <Button variant="primary" onClick={()=>{
+                                            navigate("/Edit",{state:{postId: location.state.postId}});
+                                        }}>Edit</Button>
+
+                                    ) : null}
+                                    {currentUser && currentUser.uid == originalData.userId ? (
+                                            <Button variant="primary" onClick={()=>{
+
+                                                handleShow();
+
+                                            }}>Delete</Button>
+
+
+                                    ) : null}
+
                                 </Card.Body>
+                                <Modal show={show} onHide={handleClose}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Delete Comfirm</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>Are you sure about deleting?</Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={handleClose}>
+                                            No
+                                        </Button>
+                                        <Button variant="danger" onClick={() => {
+                                            axios.delete(
+                                                `http://localhost:4000/posts/${originalData._id}`)
+                                                .then(function (response) {
+                                                    if(response.data.deletedCount == 1){
+                                                        alert("Successfully deleted!");
+                                                        setUpdate(update+1);
+                                                    }
+                                                    else{
+                                                        alert("Deleted fail!");
+                                                    }
+                                                })
+                                                .catch(function (error) {
+                                                    // handle error
+                                                    alert(error);
+                                                });
+
+                                            handleClose();
+                                        }}>
+                                            Yes
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
 
                                 <Card.Body>
                                     <Card.Title>Comments:</Card.Title>
                                     <Form.Group className="mb-3" xs={10}>
-                                        <Form.Label>Leave a comment</Form.Label>
+                                        <Form.Label>Leave a comment:</Form.Label>
                                         <Row>
                                             <Form.Control as="textarea" type="input" id="newComment" xs={10}/>
-                                            <Button onClick={() => {
+                                            {/*<Button onClick={() => {*/}
 
-                                            }}>Comment as {currentUser.displayName}</Button>
+                                            {/*}}>Comment as {currentUser.displayName}</Button>*/}
+                                            {currentUser ? (
+                                                <Button onClick={() => {
+
+                                                }}>Comment as {currentUser.displayName}</Button>
+
+                                            ) : (
+                                                <Button disabled onClick={() => {
+
+                                                }}>Log in First</Button>
+                                            )}
                                         </Row>
 
                                     </Form.Group>

@@ -7,6 +7,7 @@ import { getPreciseDistance } from 'geolib';
 import axios from 'axios';
 import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
+import Modal from 'react-bootstrap/Modal'
 
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -166,7 +167,7 @@ export default function Home() {
                 let temp = new mapboxgl.Marker()
                     .setLngLat([originalData[i].longitude, originalData[i].latitude ])
                     .setPopup(new mapboxgl.Popup({  })
-                        .setHTML("<a href='/Detail'><h4>"+originalData[i].title+"</h4></a><p>"+originalData[i].content+"</p>"));
+                        .setHTML("<Container><h1>"+originalData[i].title+"</h1><p>"+originalData[i].content+"</p></Container"));
                 temp.addTo(map.current);
                 newMarkers.push(temp);
             }
@@ -302,6 +303,7 @@ export default function Home() {
                                             <Card.Img variant="top" src={ele.image[0] ? ele.image[0] : "cat.jpeg"} />
                                             <Card.Body>
                                             <Card.Title>{ele.title}</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted text-end">Pet Name: {ele.petName}</Card.Subtitle>
                                             <Card.Subtitle className="mb-2 text-muted text-end">Posted by {ele.userName} at {
                                                 new Date(ele.time).getDate()+
                                                 "/"+(new Date(ele.time).getMonth()+1)+
@@ -310,6 +312,7 @@ export default function Home() {
                                                 ":"+new Date(ele.time).getMinutes()+
                                                 ":"+new Date(ele.time).getSeconds()
                                             }</Card.Subtitle>
+
                                             <Card.Text>
                                         {contentTextTrimer(ele.content)}
                                             </Card.Text>

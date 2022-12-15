@@ -34,11 +34,6 @@ const Navigation = () => {
 
                             <NavLink to="/NewPost" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>New Post</NavLink>
 
-                            <NavLink to="/Detail" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>temp</NavLink>
-
-                            <NavLink to="/Edit" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>temp2</NavLink>
-
-
                         </Nav>
 
 
@@ -61,8 +56,6 @@ const Navigation = () => {
                             <NavLink to="/SignIn" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Sign In</NavLink>
 
                             <NavLink to="/SignUp" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Sign Up</NavLink>
-
-                            <NavLink to="/Detail" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>temp</NavLink>
 
                         </Nav>
 
