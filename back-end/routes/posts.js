@@ -149,16 +149,16 @@ router.post("/:id/comment", async (req, res) => {
     const comment = checker.checkComment(commentInfo.comment);
     const userId = checker.checkUserId(commentInfo.userId);
     const userName = checker.checkUsername(commentInfo.userName);
-    let toUser = undefined;
-    if (commentInfo.toUser) toUser = commentInfo.toUser;
-    else toUser = null;
+    //let toUser = undefined;
+    //if (commentInfo.toUser) toUser = commentInfo.toUser;
+    //else toUser = null;
 
     const addComment = await posts.addComment(
       userId,
       userName,
       comment,
-      postId,
-      toUser
+      postId
+      //toUser
     );
     res.status(200).json(addComment);
   } catch (e) {

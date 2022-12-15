@@ -1,6 +1,7 @@
 const mongoCollections = require("../config/mongoCollections");
 const postsCollections = mongoCollections.posts;
 const checker = require("../public/util");
+//const shrinkImage = require("../public/imageMagick/shrinkImage");
 const { ObjectId } = require("mongodb");
 const geolib = require("geolib");
 // const { getPreciseDistance } from 'geolib';
@@ -304,8 +305,8 @@ module.exports = {
     };
     //console.log("newReply", newReply);
 
-    const psotsCollection = await postsCollections();
-    const updatedComment = await psotsCollection.updateOne(
+    const postsCollection = await postsCollections();
+    const updatedComment = await postsCollection.updateOne(
       { _id: ObjectId(postId) },
       { $addToSet: { comments: newComment } }
     );
