@@ -6,7 +6,6 @@ import { Navigate } from "react-router-dom";
 import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
-
 function NewPost() {
 
     const { currentUser } = useContext(AuthContext);

@@ -4,6 +4,7 @@ const router = express.Router();
 const data = require("../data");
 const posts = data.posts;
 const checker = require("../public/util");
+const {shrinkImage} = require("../imageMagick/shrinkImage")
 
 // async function main(){
 //

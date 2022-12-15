@@ -9,6 +9,7 @@
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
     "firebase": "^9.15.0",
+    "fs": "^0.0.1-security",
     "geolib": "^3.3.3",
     "gm": "^1.25.0",
     "mapbox-gl": "^2.11.1",
