@@ -1,5 +1,4 @@
 var admin = require("firebase-admin");
-var serviceAccount = require("./paw-street-adminsdk.json");
 require("dotenv").config();
 
 var adminConfig = {
@@ -14,7 +13,6 @@ var adminConfig = {
   auth_provider_x509_cert_url: process.env.NODE_JS_FBA_AUTH_PROVIDER_URL,
   client_x509_cert_url: process.env.NODE_JS_FBA_CLIENT_URL,
 };
-console.log("adminConfig", adminConfig);
 
 admin.initializeApp({
   credential: admin.credential.cert(adminConfig),

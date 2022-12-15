@@ -17,6 +17,9 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage });
 
+const redis = require("redis");
+const client = redis.createClient();
+client.connect().then(() => {});
 // async function main(){
 //
 //   try{
@@ -107,10 +110,19 @@ router.get("/:id", async (req, res) => {
   console.log("get /posts/:id", req.params.id);
   try {
     let postId = req.params.id;
-    //console.log("checkSweetId")
     postId = checker.checkPostId(postId);
-    const thePost = await posts.getPostById(postId);
+    let exists = await client.exists(postId);
+    var thePost = undefined;
+    if (exists) {
+      console.log(`Show posId ${postId} from Redis Cache.`);
+      thePost = await JSON.parse(await client.get(postId));
+    } else {
+      //console.log(`posId ${postId} not in Redis.`);
+      thePost = await posts.getPostById(postId);
+      await client.set(postId, JSON.stringify(thePost));
+    }
     res.status(200).json(thePost);
+    //console.log("checkSweetId")
   } catch (e) {
     console.log(e);
     res.status(404).json({ message: e });
@@ -127,6 +139,11 @@ router.patch("/:id", async (req, res) => {
     const updatedInfo = req.body;
     const postId = checker.checkPostId(req.params.id);
     let updatedPost = await posts.patchById(postId, updatedInfo);
+    let exists = await client.exists(postId);
+    if (exists) {
+      console.log(`Update posId ${postId} in Redis Cache.`);
+      await client.set(postId, JSON.stringify(updatedPost));
+    }
     res.status(200).json(updatedPost);
   } catch (e) {
     console.log(e);
@@ -138,6 +155,11 @@ router.delete("/:id", async (req, res) => {
   console.log("delete /posts/:id", req.params.id);
   try {
     const postId = checker.checkPostId(req.params.id);
+    let exists = await client.exists(postId);
+    if (exists) {
+      console.log(`Delete posId ${postId} in Redis Cache.`);
+      await client.del(postId);
+    }
     const result = await posts.deleteById(postId);
     res.status(200).json(result);
   } catch (e) {
@@ -166,6 +188,11 @@ router.post("/:id/comment", async (req, res) => {
       postId
       //toUser
     );
+    let exists = await client.exists(postId);
+    if (exists) {
+      console.log(`Update posId ${postId} in Redis Cache(post comment).`);
+      await client.set(postId, JSON.stringify(addComment));
+    }
     res.status(200).json(addComment);
   } catch (e) {
     //console.log(e);
@@ -178,13 +205,12 @@ router.delete("/:postId/:commentId", async (req, res) => {
   const commentId = req.params.commentId;
   const postId = req.params.postId;
   try {
-    //   let theComment = await posts.getReplyById(replyId);
-    //   //console.log("route", theReply);
-    //   if (theReply.userThatPostedReply._id.toString() !== req.session.user._id) {
-    //     res.status(401).json({ error: "user doesn't match" });
-    //     return;
-    //   }
     const result = await posts.deleteComment(commentId, postId);
+    let exists = await client.exists(postId);
+    if (exists) {
+      console.log(`Update posId ${postId} in Redis Cache(delete comment).`);
+      await client.set(postId, JSON.stringify(result));
+    }
     res.status(200).json(result);
   } catch (e) {
     console.log(e);
