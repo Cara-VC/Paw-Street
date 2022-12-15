@@ -120,7 +120,7 @@ router.patch("/:id", async (req, res) => {
     //         return
     //     }
 
-    updatedPost = await posts.patchById(postId, updatedInfo);
+    let updatedPost = await posts.patchById(postId, updatedInfo);
     res.status(200).json(updatedPost);
   } catch (e) {
     console.log(e);

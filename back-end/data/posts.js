@@ -230,7 +230,7 @@ module.exports = {
   async patchById(postId, updatedInfo) {
     if (!updatedInfo) throw "No information to update.";
     postId = checker.checkPostId(postId);
-    prevPost = await this.getPostById(postId);
+    let prevPost = await this.getPostById(postId);
     let status = undefined;
     if (!updatedInfo.status) status = prevPost.status;
     else status = updatedInfo.status;
@@ -243,12 +243,15 @@ module.exports = {
     let image = undefined;
     if (!updatedInfo.image) image = prevPost.image;
     else image = updatedInfo.image;
-    let longitude = undefined;
-    if (!updatedInfo.longitude) longitude = prevPost.longitude;
-    else longitude = updatedInfo.longitude;
-    let latitude = undefined;
-    if (!updatedInfo.latitude) latitude = prevPost.latitude;
-    else latitude = updatedInfo.latitude;
+    // let longitude = undefined;
+    // if (!updatedInfo.longitude) longitude = prevPost.longitude;
+    // else longitude = updatedInfo.longitude;
+    // let latitude = undefined;
+    // if (!updatedInfo.latitude) latitude = prevPost.latitude;
+    // else latitude = updatedInfo.latitude;
+    let petName = undefined;
+    if (!updatedInfo.petName) petName = prevPost.petName;
+    else petName = updatedInfo.petName;
 
     const postsCollection = await postsCollections();
     const updatedPost = await postsCollection.updateOne(
@@ -259,8 +262,9 @@ module.exports = {
           title: title,
           content: content,
           image: image,
-          longitude: longitude,
-          latitude: latitude,
+          // longitude: longitude,
+          // latitude: latitude,
+          petName:petName
         },
       }
     );

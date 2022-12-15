@@ -9,7 +9,6 @@ import Modal from 'react-bootstrap/Modal';
 import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
-
 export default function MyPosts() {
 
     const { currentUser } = useContext(AuthContext);
@@ -32,6 +31,11 @@ export default function MyPosts() {
     const [nextPage, setNextPage] = useState(false);
     const [originalData, setOriginalData] = useState([]);
     const [markerStack, setMarkerStack] = useState([]);
+    const [update, setUpdate] = useState(1);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -129,7 +133,7 @@ export default function MyPosts() {
             }
         }
         changePage();
-    }, [pagenum]);
+    }, [pagenum,update]);
 
     useEffect( () => {
 
@@ -144,7 +148,7 @@ export default function MyPosts() {
                 let temp = new mapboxgl.Marker()
                     .setLngLat([originalData[i].longitude, originalData[i].latitude ])
                     .setPopup(new mapboxgl.Popup({  })
-                        .setHTML("<a href='/Detail'><h4>"+originalData[i].title+"</h4></a><p>"+originalData[i].content+"</p>"));
+                        .setHTML("<Container><h1>"+originalData[i].title+"</h1><p>"+originalData[i].content+"</p></Container"));
                 temp.addTo(map.current);
                 newMarkers.push(temp);
             }
@@ -209,11 +213,12 @@ export default function MyPosts() {
                                     <Card className="square border border-5"
                                           style={{ width: '25rem' }}
                                           border={ ele.status === 'lost' ? "danger" : ele.status === 'found' ? "primary" : "success" }>
-                                        <Card.Header>{ele.status.toUpperCase()}</Card.Header>
+                                        <Card.Header className="text-center">{ele.status.toUpperCase()}</Card.Header>
                                         <Card.Img variant="top" src="cat.jpeg" />
                                         <Card.Body>
                                             <Card.Title>{ele.title}</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted">Posted by {ele.userName} at {
+                                            <Card.Subtitle className="mb-2 text-muted text-end">Pet Name: {ele.petName}</Card.Subtitle>
+                                            <Card.Subtitle className="mb-2 text-muted text-end">Posted by {ele.userName} at {
                                                 new Date(ele.time).getDate()+
                                                 "/"+(new Date(ele.time).getMonth()+1)+
                                                 "/"+new Date(ele.time).getFullYear()+
@@ -228,11 +233,46 @@ export default function MyPosts() {
                                                 navigate("/Detail",{state:{postId: ele._id}});
                                             }}>Detail</Button>
                                             <Button variant="primary" onClick={()=>{
-                                                navigate("/Edit");
+                                                navigate("/Edit",{state:{postId: ele._id}});
                                             }}>Edit</Button>
                                             <Button variant="primary" onClick={()=>{
 
+                                                handleShow();
+
                                             }}>Delete</Button>
+                                            <Modal show={show} onHide={handleClose}>
+                                                <Modal.Header closeButton>
+                                                    <Modal.Title>Delete Comfirm</Modal.Title>
+                                                </Modal.Header>
+                                                <Modal.Body>Are you sure about deleting?</Modal.Body>
+                                                <Modal.Footer>
+                                                    <Button variant="secondary" onClick={handleClose}>
+                                                        No
+                                                    </Button>
+                                                    <Button variant="danger" onClick={() => {
+                                                        axios.delete(
+                                                            `http://localhost:4000/posts/${ele._id}`)
+                                                            .then(function (response) {
+                                                                if(response.data.deletedCount == 1){
+                                                                    alert("Successfully deleted!");
+                                                                    alert(ele._id);
+                                                                    setUpdate(update+1);
+                                                                }
+                                                                else{
+                                                                    alert("Deleted fail!");
+                                                                }
+                                                            })
+                                                            .catch(function (error) {
+                                                                // handle error
+                                                                alert(error);
+                                                            });
+
+                                                        handleClose();
+                                                    }}>
+                                                        Yes
+                                                    </Button>
+                                                </Modal.Footer>
+                                            </Modal>
                                         </Card.Body>
                                     </Card>
                                 )
