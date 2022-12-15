@@ -124,19 +124,25 @@ module.exports = {
     }
   },
 
-  async getPostByUserId(userId,pagenum) {
+  async getPostByUserId(userId, pageNum) {
     try {
+      userId = checker.checkUserId(userId);
+      pageNum = checker.checkPageNum(pageNum);
       const postsCollection = await postsCollections();
+      const limit = 10;
+      const skip = (pageNum - 1) * limit;
       const postsByUserId = await postsCollection
         .find({ userId: userId })
+        .skip(skip)
+        .limit(limit)
         .toArray();
       if (!postsByUserId) throw `No post by userId ${userId}`;
       //console.log(postsByUserId);
       for (let post of postsByUserId) {
         post._id = post._id.toString();
       }
-      let result = postsByUserId.slice(10 * pagenum - 10, 10 * pagenum);
-      return result;
+      // let result = postsByUserId.slice(10 * pagenum - 10, 10 * pagenum);
+      return postsByUserId;
     } catch (e) {
       console.log(e);
       throw e;
@@ -293,7 +299,8 @@ module.exports = {
       userName: userName,
       userId: userId,
       comment: comment,
-      toUser: toUser,
+      //toUser: toUser,
+      time: Date.now(),
     };
     //console.log("newReply", newReply);
 

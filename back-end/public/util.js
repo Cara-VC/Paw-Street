@@ -48,6 +48,13 @@ function checkComment(comment) {
   return comment;
 }
 
+function checkPageNum(pageNum) {
+  if (!pageNum) pageNum = "1";
+  //console.log(pageNum, typeof pageNum);
+  if (pageNum <= 0) pageNum = "1";
+  return pageNum;
+}
+
 module.exports = {
   checkUsername,
   checkUserId,
@@ -57,4 +64,5 @@ module.exports = {
   checkPostId,
   checkComment,
   checkUserId,
+  checkPageNum,
 };
