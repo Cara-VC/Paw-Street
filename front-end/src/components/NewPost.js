@@ -5,6 +5,8 @@ import axios from "axios";
 import { Navigate, useNavigate} from "react-router-dom";
 import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {storage} from "../firebase/Firebase";
 
 
 function NewPost() {
@@ -12,6 +14,64 @@ function NewPost() {
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const lnglat = useContext(CurrentLocationLngLatContext);
+
+    const handleSubmit = async (e) => {
+        try{
+            e.preventDefault();
+
+            let newPost = {
+
+                title: document.getElementById("title").value,
+                userId: currentUser.uid,
+                userName: currentUser.displayName,
+                status: document.getElementById("status").value,
+                content: document.getElementById("content").value,
+                image: [],
+                longitude:lnglat.current[0],
+                latitude:lnglat.current[1],
+                petName: document.getElementById("petName").value
+            };
+            navigator.geolocation.getCurrentPosition(function(position) {
+                newPost.longitude = position.coords.longitude;
+                newPost.latitude = position.coords.latitude;
+            });
+
+            const files = document.getElementById("image").files;
+
+            for(let file of files){
+                const storageRef = ref(storage, `images/${currentUser.displayName + new Date()}`);
+
+                await uploadBytesResumable(storageRef, file)
+                    .then(async () => {
+                        await getDownloadURL(storageRef)
+                            .then(async (url) => {
+                                newPost.image.push(url);
+                            })
+                            .catch((error) => {
+                                alert(error);
+                            });
+
+                });
+            }
+            await axios.post('http://localhost:4000/posts/',newPost)
+                .then(async function (response) {
+                    alert("Successfully create a new post!");
+                    navigate("/Detail",{state:{postId: response.data._id}});
+
+                })
+                .catch(function (error) {
+                    alert(error);
+                });
+        }catch (e){
+            alert(e);
+        }
+
+    };
+
+
+
+
+
 
 
     if (currentUser) {
@@ -51,48 +111,7 @@ function NewPost() {
                     <Form.Control type="file" multiple accept="image/*" id="image"/>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" onClick={(e) => {
-
-                    e.preventDefault();
-
-                    let newPost = {
-
-                        title: document.getElementById("title").value,
-                        userId: currentUser.uid,
-                        userName: currentUser.displayName,
-                        status: document.getElementById("status").value,
-                        content: document.getElementById("content").value,
-                        image: document.getElementById("image").files,
-                        longitude:lnglat.current[0],
-                        latitude:lnglat.current[1],
-                        petName: document.getElementById("petName").value
-                    };
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        newPost.longitude = position.coords.longitude;
-                        newPost.latitude = position.coords.latitude;
-                    });
-
-                    axios.post('http://localhost:4000/posts/',newPost)
-                        .then(function (response) {
-                            alert("Successfully create a new post!");
-                            navigate("/Detail",{state:{postId: response.data._id}});
-                        })
-                        .catch(function (error) {
-                            alert(error);
-                        });
-
-
-                    // axios.get('http://localhost:4000/posts/')
-                    //     .then(function (response) {
-                    //         // handle success
-                    //         console.log(response);
-                    //     })
-                    //     .catch(function (error) {
-                    //         // handle error
-                    //         console.log(error);
-                    //     });
-                    console.log(newPost);
-                }}>
+                <Button variant="primary" type="submit" onClick={handleSubmit}>
                     Submit
                 </Button>
             </Form>

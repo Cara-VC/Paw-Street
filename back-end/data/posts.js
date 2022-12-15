@@ -295,13 +295,14 @@ module.exports = {
     }
   },
 
-  async addComment(userId, userName, comment, postId, toUser) {
+  async addComment(userId, userName, comment, postId) {
     comment = checker.checkComment(comment);
     postId = checker.checkPostId(postId);
 
     const newComment = {
       _id: ObjectId(),
       userName: userName,
+      postId:postId,
       userId: userId,
       comment: comment,
       //toUser: toUser,
