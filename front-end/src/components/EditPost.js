@@ -76,11 +76,6 @@ function EditPost() {
                                     <Form.Control as="textarea" type="input" placeholder={originalData.content} id="content" />
                                 </Form.Group>
 
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Upload pictures</Form.Label>
-                                    <Form.Control type="file" multiple accept="image/*" id="image"/>
-                                </Form.Group>
-
                                 <Button variant="primary" type="submit" onClick={(e) => {
 
                                     e.preventDefault();
@@ -90,7 +85,6 @@ function EditPost() {
                                         title: document.getElementById("title").value != "" ? document.getElementById("title").value : originalData.title,
                                         status: document.getElementById("status").value != "" ? document.getElementById("status").value : originalData.status,
                                         content: document.getElementById("content").value != "" ? document.getElementById("content").value : originalData.content,
-                                        image: document.getElementById("image").files != "" ? document.getElementById("image").files : originalData.image,
                                         petName: document.getElementById("petName").value != "" ? document.getElementById("petName").value : originalData.petName
 
                                     };

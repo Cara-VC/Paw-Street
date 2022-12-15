@@ -8,6 +8,8 @@ import axios from 'axios';
 import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 import Modal from 'react-bootstrap/Modal'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {storage} from "../firebase/Firebase";
 
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -101,9 +103,6 @@ export default function Home() {
                         console.log(error);
                     });
 
-                // await setOriginalData(originalFakeData);
-                // await setSelectedData(originalFakeData);
-                // await setPagedData(originalFakeData.slice(0,10));
                 await navigator.geolocation.getCurrentPosition(function(position) {
 
                     lnglat.current=[position.coords.longitude, position.coords.latitude];
@@ -126,8 +125,7 @@ export default function Home() {
             try{
                 await axios.get(
                     `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`)
-                    .then(function (response) {
-
+                    .then(async function (response) {
                         setOriginalData(response.data);
                     })
                     .catch(function (error) {
@@ -212,16 +210,13 @@ export default function Home() {
                                                 <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}}/>
                                         }
                                         <Pagination.Item active>{pagenum}</Pagination.Item>
-                                        {/*<Pagination.Ellipsis />*/}
-                                        {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
+
                                         {
-                                            // pagenum === Math.ceil(originalData.length / 10) ?
                                             nextPage == true?
                                                 <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} />
                                                 :
                                                 <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
                                         }
-                                        {/*<Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>*/}
                                     </Pagination>
                                 </Col>
                                 <Col xs="2">
@@ -294,13 +289,29 @@ export default function Home() {
 
                                 originalData.map((ele) => {
 
+                                    // const storageRef = ref(storage, ele.image[0]);
+                                    //
+                                    // getDownloadURL(storageRef)
+                                    //     .then(async (url) => {
+                                    //         // const img = document.getElementById(`${ele._id}`);
+                                    //         // img.setAttribute('src', url);
+                                    //         // console.log(url);
+                                    //
+                                    //     })
+                                    //     .catch((error) => {
+                                    //         alert(error);
+                                    //     });
+
+
+
+
                                     // console.log([ele.longitude, ele.latitude ], markerStack);
                                     return (
 
                                         <Card className="square border border-5" style={{ width: '25rem' }}
                                         border={ ele.status === 'lost' ? "danger" : ele.status === 'found' ? "primary" : "success" }>
                                             <Card.Header className="text-center">{ele.status.toUpperCase()}</Card.Header>
-                                            <Card.Img variant="top" src={ele.image[0] ? ele.image[0] : "cat.jpeg"} />
+                                            <Card.Img  variant="top" src={ele.image[0] ? ele.image[0] : "/imgs/missingPicture.jpeg"} />
                                             <Card.Body>
                                             <Card.Title>{ele.title}</Card.Title>
                                             <Card.Subtitle className="mb-2 text-muted text-end">Pet Name: {ele.petName}</Card.Subtitle>
