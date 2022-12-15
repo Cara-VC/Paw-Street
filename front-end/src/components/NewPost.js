@@ -2,14 +2,16 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Container, Form, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate} from "react-router-dom";
 import {AuthContext} from '../firebase/Auth';
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 function NewPost() {
 
     const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
     const lnglat = useContext(CurrentLocationLngLatContext);
+
 
     if (currentUser) {
         // console.log(user.uid,1)
@@ -57,8 +59,6 @@ function NewPost() {
                         title: document.getElementById("title").value,
                         userId: currentUser.uid,
                         userName: currentUser.displayName,
-                        // userId:"EtF1bMmYrScbXgLtmtT5NVVEjGi1",
-                        // userName:"夏继远",
                         status: document.getElementById("status").value,
                         content: document.getElementById("content").value,
                         image: document.getElementById("image").files,
@@ -73,10 +73,11 @@ function NewPost() {
 
                     axios.post('http://localhost:4000/posts/',newPost)
                         .then(function (response) {
-                            console.log(response.data);
+                            alert("Successfully create a new post!");
+                            navigate("/Detail",{state:{postId: response.data._id}});
                         })
                         .catch(function (error) {
-                            console.log(error);
+                            alert(error);
                         });
 
 

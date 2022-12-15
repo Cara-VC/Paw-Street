@@ -1,6 +1,7 @@
 const mongoCollections = require("../config/mongoCollections");
 const postsCollections = mongoCollections.posts;
 const checker = require("../public/util");
+//const shrinkImage = require("../public/imageMagick/shrinkImage");
 const { ObjectId } = require("mongodb");
 const geolib = require("geolib");
 // const { getPreciseDistance } from 'geolib';
@@ -230,7 +231,7 @@ module.exports = {
   async patchById(postId, updatedInfo) {
     if (!updatedInfo) throw "No information to update.";
     postId = checker.checkPostId(postId);
-    prevPost = await this.getPostById(postId);
+    let prevPost = await this.getPostById(postId);
     let status = undefined;
     if (!updatedInfo.status) status = prevPost.status;
     else status = updatedInfo.status;
@@ -243,12 +244,15 @@ module.exports = {
     let image = undefined;
     if (!updatedInfo.image) image = prevPost.image;
     else image = updatedInfo.image;
-    let longitude = undefined;
-    if (!updatedInfo.longitude) longitude = prevPost.longitude;
-    else longitude = updatedInfo.longitude;
-    let latitude = undefined;
-    if (!updatedInfo.latitude) latitude = prevPost.latitude;
-    else latitude = updatedInfo.latitude;
+    // let longitude = undefined;
+    // if (!updatedInfo.longitude) longitude = prevPost.longitude;
+    // else longitude = updatedInfo.longitude;
+    // let latitude = undefined;
+    // if (!updatedInfo.latitude) latitude = prevPost.latitude;
+    // else latitude = updatedInfo.latitude;
+    let petName = undefined;
+    if (!updatedInfo.petName) petName = prevPost.petName;
+    else petName = updatedInfo.petName;
 
     const postsCollection = await postsCollections();
     const updatedPost = await postsCollection.updateOne(
@@ -259,8 +263,9 @@ module.exports = {
           title: title,
           content: content,
           image: image,
-          longitude: longitude,
-          latitude: latitude,
+          // longitude: longitude,
+          // latitude: latitude,
+          petName:petName
         },
       }
     );
@@ -304,8 +309,8 @@ module.exports = {
     };
     //console.log("newReply", newReply);
 
-    const psotsCollection = await postsCollections();
-    const updatedComment = await psotsCollection.updateOne(
+    const postsCollection = await postsCollections();
+    const updatedComment = await postsCollection.updateOne(
       { _id: ObjectId(postId) },
       { $addToSet: { comments: newComment } }
     );
