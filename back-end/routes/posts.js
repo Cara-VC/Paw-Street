@@ -4,12 +4,12 @@ const router = express.Router();
 const data = require("../data");
 const posts = data.posts;
 const checker = require("../public/util");
-const { shrinkImage } = require("../imageMagick/shrinkImage");
+const { shrinkImage } = require("../public/shrinkImage");
 const multer = require("multer");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "imageMagick");
+    cb(null, "public");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -126,14 +126,6 @@ router.patch("/:id", async (req, res) => {
   try {
     const updatedInfo = req.body;
     const postId = checker.checkPostId(req.params.id);
-    //     const prevSweet = await sweets.getSweetById(sweetId);
-    //     //console.log(prevSweet.userThatPosted);
-    //     //console.log(prevSweet.userThatPosted._id.toString(), req.session.user._id);
-    //     if (prevSweet.userThatPosted._id.toString() !== req.session.user._id) {
-    //         res.status(401).json({error:"user doesn't match"});
-    //         return
-    //     }
-
     let updatedPost = await posts.patchById(postId, updatedInfo);
     res.status(200).json(updatedPost);
   } catch (e) {
@@ -143,7 +135,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  console.log("delete /posts/:id");
+  console.log("delete /posts/:id", req.params.id);
   try {
     const postId = checker.checkPostId(req.params.id);
     const result = await posts.deleteById(postId);

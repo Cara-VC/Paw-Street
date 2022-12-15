@@ -3,7 +3,7 @@ const postsCollections = mongoCollections.posts;
 const checker = require("../public/util");
 const { ObjectId } = require("mongodb");
 const geolib = require("geolib");
-const shrinkImage = require("../imageMagick/shrinkImage");
+const shrinkImage = require("../public/shrinkImage");
 const firebase = require("../config/firebase/Firebase");
 const bucket = firebase.bucket;
 const uuid = require("uuid-v4");
@@ -67,10 +67,7 @@ async function processImage(imageName) {
   //console.log("process image");
   //console.log(imageName);
   outputName = Date.now() + imageName;
-  shrinkImage.shrinkImage(
-    `imageMagick/${imageName}`,
-    `imageMagick/${outputName}`
-  );
+  shrinkImage.shrinkImage(`public/${imageName}`, `public/${outputName}`);
   const metadata = {
     metadata: {
       // This line is very important. It's to create a download token.
@@ -81,7 +78,7 @@ async function processImage(imageName) {
   };
   //console.log(outputName);
   await new Promise((r) => setTimeout(r, 1000));
-  await bucket.upload(`imageMagick/${outputName}`, {
+  await bucket.upload(`public/${outputName}`, {
     // Support for HTTP requests made with `Accept-Encoding: gzip`
     gzip: true,
     metadata: metadata,
@@ -89,8 +86,8 @@ async function processImage(imageName) {
   //console.log("metadata", metadata);
   const url = `https://firebasestorage.googleapis.com/v0/b/paw-street-cb83d.appspot.com/o/${outputName}?alt=media&token=${metadata.metadata.firebaseStorageDownloadTokens}`;
   console.log(url);
-  fs.unlinkSync(`imageMagick/${imageName}`);
-  fs.unlinkSync(`imageMagick/${outputName}`);
+  fs.unlinkSync(`public/${imageName}`);
+  fs.unlinkSync(`public/${outputName}`);
   return url;
 }
 
@@ -111,7 +108,8 @@ module.exports = {
     status = checker.checkStatus(status);
     title = checker.checkTitle(title);
     content = checker.checkContent(content);
-    const imageUrl = await processImage(imageName);
+    const imageUrl = [];
+    imageUrl.push(await processImage(imageName));
 
     const postsCollection = await postsCollections();
 
@@ -217,7 +215,7 @@ module.exports = {
         }
       }
       result = result.slice(10 * pagenum - 10, 10 * pagenum);
-      console.log(result);
+      //console.log(result);
       return result;
     } catch (e) {
       //console.log(e);
@@ -318,7 +316,7 @@ module.exports = {
     const postsCollection = await postsCollections();
     try {
       const result = await postsCollection.deleteOne({ _id: ObjectId(postId) });
-      console.log(result);
+      //console.log(result);
       if (result.deletedCount === 1) {
         console.log("Successfully deleted one document.");
       } else {
@@ -340,7 +338,7 @@ module.exports = {
     const newComment = {
       _id: ObjectId(),
       userName: userName,
-      postId:postId,
+      postId: postId,
       userId: userId,
       comment: comment,
       //toUser: toUser,
