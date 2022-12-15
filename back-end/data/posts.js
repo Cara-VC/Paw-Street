@@ -340,6 +340,7 @@ module.exports = {
     const newComment = {
       _id: ObjectId(),
       userName: userName,
+      postId:postId,
       userId: userId,
       comment: comment,
       //toUser: toUser,

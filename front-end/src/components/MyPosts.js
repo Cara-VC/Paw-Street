@@ -1,5 +1,5 @@
 import React, { useRef, useContext, useEffect, useState} from 'react';
-import {Container, Form, Button, Pagination, Row, Card} from "react-bootstrap";
+import {Container, Form, Button, Pagination, Row, Card, Col} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -133,7 +133,7 @@ export default function MyPosts() {
             }
         }
         changePage();
-    }, [pagenum,update]);
+    }, [pagenum]);
 
     useEffect( () => {
 
@@ -177,114 +177,122 @@ export default function MyPosts() {
         return (
             <Container>
                 <h1>My Posts</h1>
-                {!originalData ? null :
-                    <div>
-                        <div>
-                            <Pagination>
-                                <Pagination.First onClick={()=>{setPagenum(1)}} />
-                                {
-                                    pagenum === 1 ?
-                                        <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}} disabled/>
-                                        :
-                                        <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}}/>
-                                }
-                                <Pagination.Item active>{pagenum}</Pagination.Item>
-                                {/*<Pagination.Ellipsis />*/}
-                                {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
-                                {
-                                    // pagenum === Math.ceil(originalData.length / 10) ?
-                                    nextPage == true?
-                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} />
-                                        :
-                                        <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
-                                }
-                                {/*<Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>*/}
-                            </Pagination>
-                        </div>
-
-
+                {!originalData ?
+                    null
+                    :
+                    originalData && originalData == [] ?
+                        <h2>It seems like you do not have any post. :(</h2>
+                        :
                         <Row>
-                            {
-                                !originalData ? null :
+                            <Col>
+                                <Pagination>
+                                    <Pagination.First onClick={()=>{setPagenum(1)}} />
+                                    {
+                                        pagenum === 1 ?
+                                            <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}} disabled/>
+                                            :
+                                            <Pagination.Prev onClick={()=>{setPagenum(pagenum - 1)}}/>
+                                    }
+                                    <Pagination.Item active>{pagenum}</Pagination.Item>
+                                    {/*<Pagination.Ellipsis />*/}
+                                    {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
+                                    {
+                                        // pagenum === Math.ceil(originalData.length / 10) ?
+                                        nextPage == true?
+                                            <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} />
+                                            :
+                                            <Pagination.Next onClick={()=>{setPagenum(pagenum + 1)}} disabled/>
+                                    }
+                                    {/*<Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>*/}
+                                </Pagination>
+                            </Col>
 
-                                originalData.map((ele) => {
-                                return (
+                            <Row>
+                                <Col>
+                                    {
+                                        !originalData ? null :
 
-                                    <Card className="square border border-5"
-                                          style={{ width: '25rem' }}
-                                          border={ ele.status === 'lost' ? "danger" : ele.status === 'found' ? "primary" : "success" }>
-                                        <Card.Header className="text-center">{ele.status.toUpperCase()}</Card.Header>
-                                        <Card.Img variant="top" src="cat.jpeg" />
-                                        <Card.Body>
-                                            <Card.Title>{ele.title}</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted text-end">Pet Name: {ele.petName}</Card.Subtitle>
-                                            <Card.Subtitle className="mb-2 text-muted text-end">Posted by {ele.userName} at {
-                                                new Date(ele.time).getDate()+
-                                                "/"+(new Date(ele.time).getMonth()+1)+
-                                                "/"+new Date(ele.time).getFullYear()+
-                                                " "+new Date(ele.time).getHours()+
-                                                ":"+new Date(ele.time).getMinutes()+
-                                                ":"+new Date(ele.time).getSeconds()
-                                            }</Card.Subtitle>
-                                            <Card.Text>
-                                                {contentTextTrimer(ele.content)}
-                                            </Card.Text>
-                                            <Button variant="primary" onClick={()=>{
-                                                navigate("/Detail",{state:{postId: ele._id}});
-                                            }}>Detail</Button>
-                                            <Button variant="primary" onClick={()=>{
-                                                navigate("/Edit",{state:{postId: ele._id}});
-                                            }}>Edit</Button>
-                                            <Button variant="primary" onClick={()=>{
+                                        originalData.map((ele) => {
+                                        return (
 
-                                                handleShow();
+                                            <Card className="square border border-5"
+                                                  style={{ width: '25rem' }}
+                                                  border={ ele.status === 'lost' ? "danger" : ele.status === 'found' ? "primary" : "success" }>
+                                                <Card.Header className="text-center">{ele.status.toUpperCase()}</Card.Header>
+                                                <Card.Img variant="top" src={ele.image[0] ? ele.image[0] : "/imgs/missingPicture.jpeg"} />
+                                                <Card.Body>
+                                                    <Card.Title>{ele.title}</Card.Title>
+                                                    <Card.Subtitle className="mb-2 text-muted text-end">Pet Name: {ele.petName}</Card.Subtitle>
+                                                    <Card.Subtitle className="mb-2 text-muted text-end">Posted by {ele.userName} at {
+                                                        new Date(ele.time).getDate()+
+                                                        "/"+(new Date(ele.time).getMonth()+1)+
+                                                        "/"+new Date(ele.time).getFullYear()+
+                                                        " "+new Date(ele.time).getHours()+
+                                                        ":"+new Date(ele.time).getMinutes()+
+                                                        ":"+new Date(ele.time).getSeconds()
+                                                    }</Card.Subtitle>
+                                                    <Card.Text>
+                                                        {contentTextTrimer(ele.content)}
+                                                    </Card.Text>
+                                                    <Button variant="primary" onClick={()=>{
+                                                        navigate("/Detail",{state:{postId: ele._id}});
+                                                    }}>Detail</Button>
+                                                    <Button variant="primary" onClick={()=>{
+                                                        navigate("/Edit",{state:{postId: ele._id}});
+                                                    }}>Edit</Button>
+                                                    <Button variant="primary" onClick={()=>{
 
-                                            }}>Delete</Button>
-                                            <Modal show={show} onHide={handleClose}>
-                                                <Modal.Header closeButton>
-                                                    <Modal.Title>Delete Comfirm</Modal.Title>
-                                                </Modal.Header>
-                                                <Modal.Body>Are you sure about deleting?</Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="secondary" onClick={handleClose}>
-                                                        No
-                                                    </Button>
-                                                    <Button variant="danger" onClick={() => {
-                                                        axios.delete(
-                                                            `http://localhost:4000/posts/${ele._id}`)
-                                                            .then(function (response) {
-                                                                if(response.data.deletedCount == 1){
-                                                                    alert("Successfully deleted!");
-                                                                    alert(ele._id);
-                                                                    setUpdate(update+1);
-                                                                }
-                                                                else{
-                                                                    alert("Deleted fail!");
-                                                                }
-                                                            })
-                                                            .catch(function (error) {
-                                                                // handle error
-                                                                alert(error);
-                                                            });
+                                                        handleShow();
 
-                                                        handleClose();
-                                                    }}>
-                                                        Yes
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-                                        </Card.Body>
-                                    </Card>
-                                )
-                            })
-                            }
+                                                    }}>Delete</Button>
+                                                    <Modal show={show} onHide={handleClose}>
+                                                        <Modal.Header closeButton>
+                                                            <Modal.Title>Delete Comfirm</Modal.Title>
+                                                        </Modal.Header>
+                                                        <Modal.Body>Are you sure about deleting?</Modal.Body>
+                                                        <Modal.Footer>
+                                                            <Button variant="secondary" onClick={handleClose}>
+                                                                No
+                                                            </Button>
+                                                            <Button variant="danger" onClick={() => {
+                                                                axios.delete(
+                                                                    `http://localhost:4000/posts/${ele._id}`)
+                                                                    .then(function (response) {
+                                                                        if(response.data.deletedCount == 1){
+                                                                            alert("Successfully deleted!");
+                                                                            let newUpdate = update+1;
+                                                                            setUpdate(newUpdate);
+                                                                        }
+                                                                        else{
+                                                                            alert("Deleted fail!");
+                                                                        }
+                                                                    })
+                                                                    .catch(function (error) {
+                                                                        // handle error
+                                                                        alert(error);
+                                                                    });
+
+                                                                handleClose();
+                                                            }}>
+                                                                Yes
+                                                            </Button>
+                                                        </Modal.Footer>
+                                                    </Modal>
+                                                </Card.Body>
+                                            </Card>
+                                        )
+                                    })
+                                    }
+                                </Col>
+
+                                <Row className="col-6 col-sm-4">
+                                    <div ref={mapContainer} className="map-container" />
+                                    <div className="sidebar">Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}</div>
+                                </Row>
+
+                            </Row>
                         </Row>
 
-                        <div className="col-6 col-sm-4">
-                            <div ref={mapContainer} className="map-container" />
-                            <div className="sidebar">Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}</div>
-                        </div>
-                    </div>
                 }
             </Container>
         )
