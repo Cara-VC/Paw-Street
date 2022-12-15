@@ -4,7 +4,18 @@ const router = express.Router();
 const data = require("../data");
 const posts = data.posts;
 const checker = require("../public/util");
-const {shrinkImage} = require("../public/shrinkImage")
+const { shrinkImage } = require("../imageMagick/shrinkImage");
+const multer = require("multer");
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "imageMagick");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+var upload = multer({ storage: storage });
 
 // async function main(){
 //
@@ -58,8 +69,10 @@ router.get("/:longitude/:latitude", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   console.log("post /posts/");
+  //console.log(req.file);
+  //console.log(req.body.title);
   try {
     //console.log(req.body);
     let userName = req.body.userName;
@@ -67,7 +80,7 @@ router.post("/", async (req, res) => {
     let status = req.body.status;
     let title = req.body.title;
     let content = req.body.content;
-    let image = req.body.image;
+    let imageName = req.file.originalname;
     let longitude = req.body.longitude;
     let latitude = req.body.latitude;
     let petName = req.body.petName;
@@ -78,14 +91,14 @@ router.post("/", async (req, res) => {
       status,
       title,
       content,
-      image,
+      imageName,
       longitude,
       latitude,
       petName
     );
     res.status(200).json(newPost);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     res.status(500).json({ message: e });
   }
 });
