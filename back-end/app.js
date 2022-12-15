@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const configRoutes = require("./routes");
 const cors = require("cors");
-require("dotenv").config({ path: ".env" });
+require("dotenv").config();
 
 // const redis = require("redis");
 // const client = redis.createClient();
