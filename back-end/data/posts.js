@@ -1,9 +1,14 @@
 const mongoCollections = require("../config/mongoCollections");
 const postsCollections = mongoCollections.posts;
 const checker = require("../public/util");
-//const shrinkImage = require("../public/imageMagick/shrinkImage");
 const { ObjectId } = require("mongodb");
 const geolib = require("geolib");
+const shrinkImage = require("../imageMagick/shrinkImage");
+const firebase = require("../config/firebase/Firebase");
+const bucket = firebase.bucket;
+const uuid = require("uuid-v4");
+var fs = require("fs");
+
 // const { getPreciseDistance } from 'geolib';
 //const { post } = require("../routes/posts");
 function checkStatus(singleData, story, lost, found) {
@@ -57,6 +62,38 @@ function checkDistance(singleData, curLongitude, curLatitude, distance) {
   }
   return false;
 }
+
+async function processImage(imageName) {
+  //console.log("process image");
+  //console.log(imageName);
+  outputName = Date.now() + imageName;
+  shrinkImage.shrinkImage(
+    `imageMagick/${imageName}`,
+    `imageMagick/${outputName}`
+  );
+  const metadata = {
+    metadata: {
+      // This line is very important. It's to create a download token.
+      firebaseStorageDownloadTokens: uuid(),
+    },
+    contentType: "image",
+    cacheControl: "public, max-age=31536000",
+  };
+  //console.log(outputName);
+  await new Promise((r) => setTimeout(r, 1000));
+  await bucket.upload(`imageMagick/${outputName}`, {
+    // Support for HTTP requests made with `Accept-Encoding: gzip`
+    gzip: true,
+    metadata: metadata,
+  });
+  //console.log("metadata", metadata);
+  const url = `https://firebasestorage.googleapis.com/v0/b/paw-street-cb83d.appspot.com/o/${outputName}?alt=media&token=${metadata.metadata.firebaseStorageDownloadTokens}`;
+  console.log(url);
+  fs.unlinkSync(`imageMagick/${imageName}`);
+  fs.unlinkSync(`imageMagick/${outputName}`);
+  return url;
+}
+
 module.exports = {
   async creatPost(
     userName,
@@ -64,7 +101,7 @@ module.exports = {
     status,
     title,
     content,
-    image,
+    imageName,
     longitude,
     latitude,
     petName
@@ -74,6 +111,7 @@ module.exports = {
     status = checker.checkStatus(status);
     title = checker.checkTitle(title);
     content = checker.checkContent(content);
+    const imageUrl = await processImage(imageName);
 
     const postsCollection = await postsCollections();
 
@@ -83,7 +121,7 @@ module.exports = {
       status: status,
       title: title,
       content: content,
-      image: image,
+      image: imageUrl,
       longitude: longitude,
       latitude: latitude,
       comments: [],
@@ -265,7 +303,7 @@ module.exports = {
           image: image,
           // longitude: longitude,
           // latitude: latitude,
-          petName:petName
+          petName: petName,
         },
       }
     );
@@ -295,7 +333,7 @@ module.exports = {
     }
   },
 
-  async addComment(userId, userName, comment, postId, toUser) {
+  async addComment(userId, userName, comment, postId) {
     comment = checker.checkComment(comment);
     postId = checker.checkPostId(postId);
 

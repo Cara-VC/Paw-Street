@@ -1,105 +1,141 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Container, Form, Button} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Container, Form, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { Navigate, useNavigate} from "react-router-dom";
-import {AuthContext} from '../firebase/Auth';
+import { Navigate, useNavigate } from "react-router-dom";
+import { AuthContext } from "../firebase/Auth";
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 function NewPost() {
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const lnglat = useContext(CurrentLocationLngLatContext);
 
-    const { currentUser } = useContext(AuthContext);
-    const navigate = useNavigate();
-    const lnglat = useContext(CurrentLocationLngLatContext);
-
-
-    if (currentUser) {
-        // console.log(user.uid,1)
+  if (currentUser) {
+    // console.log(user.uid,1)
     return (
-        <Container>
+      <Container>
+        <h1>New Post</h1>
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Category</Form.Label>
+            <Form.Select id="status">
+              <option value="story">Story</option>
+              <option value="lost">Lost</option>
+              <option value="found">Found</option>
+            </Form.Select>
+          </Form.Group>
 
-            <h1>New Post</h1>
-            <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Title</Form.Label>
+            <Form.Control type="input" placeholder="Title" id="title" />
+          </Form.Group>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Category</Form.Label>
-                    <Form.Select id="status">
-                        <option value="story">Story</option>
-                        <option value="lost">Lost</option>
-                        <option value="found">Found</option>
-                    </Form.Select>
-                </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Pet Name</Form.Label>
+            <Form.Control type="input" placeholder="Pet Name" id="petName" />
+          </Form.Group>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control type="input" placeholder="Title" id="title" />
-                </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Content</Form.Label>
+            <Form.Control
+              as="textarea"
+              type="input"
+              placeholder="What's new"
+              id="content"
+            />
+          </Form.Group>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Pet Name</Form.Label>
-                    <Form.Control type="input" placeholder="Pet Name" id="petName"/>
-                </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Upload pictures</Form.Label>
+            <Form.Control
+              type="file"
+              multiple
+              accept="image/*"
+              id="image"
+              name="image"
+            />
+          </Form.Group>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Content</Form.Label>
-                    <Form.Control as="textarea" type="input" placeholder="What's new" id="content"/>
-                </Form.Group>
+          <Button
+            variant="primary"
+            type="submit"
+            onClick={(e) => {
+              e.preventDefault();
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Upload pictures</Form.Label>
-                    <Form.Control type="file" multiple accept="image/*" id="image"/>
-                </Form.Group>
+              //   let newPost = {
+              //     title: document.getElementById("title").value,
+              //     userId: currentUser.uid,
+              //     userName: currentUser.displayName,
+              //     status: document.getElementById("status").value,
+              //     content: document.getElementById("content").value,
+              //     image: document.getElementById("image").files[0],
+              //     longitude: lnglat.current[0],
+              //     latitude: lnglat.current[1],
+              //     petName: document.getElementById("petName").value,
+              //   };
+              //   navigator.geolocation.getCurrentPosition(function (position) {
+              //     newPost.longitude = position.coords.longitude;
+              //     newPost.latitude = position.coords.latitude;
+              //   });
 
-                <Button variant="primary" type="submit" onClick={(e) => {
+              let newPostFormData = new FormData();
+              newPostFormData.set(
+                "title",
+                document.getElementById("title").value
+              );
+              newPostFormData.set("userId", currentUser.uid);
+              newPostFormData.set("userName", currentUser.displayName);
+              newPostFormData.set(
+                "status",
+                document.getElementById("status").value
+              );
+              newPostFormData.set(
+                "content",
+                document.getElementById("content").value
+              );
+              newPostFormData.set(
+                "petName",
+                document.getElementById("petName").value
+              );
+              newPostFormData.set("longitude", lnglat.current[0]);
+              newPostFormData.set("latitude", lnglat.current[1]);
 
-                    e.preventDefault();
+              newPostFormData.append(
+                "image",
+                document.getElementById("image").files[0]
+              );
 
-                    let newPost = {
+              axios
+                .post("http://localhost:4000/posts/", newPostFormData)
+                .then(function (response) {
+                  alert("Successfully create a new post!");
+                  navigate("/Detail", { state: { postId: response.data._id } });
+                })
+                .catch(function (error) {
+                  alert(error);
+                });
 
-                        title: document.getElementById("title").value,
-                        userId: currentUser.uid,
-                        userName: currentUser.displayName,
-                        status: document.getElementById("status").value,
-                        content: document.getElementById("content").value,
-                        image: document.getElementById("image").files,
-                        longitude:lnglat.current[0],
-                        latitude:lnglat.current[1],
-                        petName: document.getElementById("petName").value
-                    };
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        newPost.longitude = position.coords.longitude;
-                        newPost.latitude = position.coords.latitude;
-                    });
-
-                    axios.post('http://localhost:4000/posts/',newPost)
-                        .then(function (response) {
-                            alert("Successfully create a new post!");
-                            navigate("/Detail",{state:{postId: response.data._id}});
-                        })
-                        .catch(function (error) {
-                            alert(error);
-                        });
-
-
-                    // axios.get('http://localhost:4000/posts/')
-                    //     .then(function (response) {
-                    //         // handle success
-                    //         console.log(response);
-                    //     })
-                    //     .catch(function (error) {
-                    //         // handle error
-                    //         console.log(error);
-                    //     });
-                    console.log(newPost);
-                }}>
-                    Submit
-                </Button>
-            </Form>
-        </Container>
-    )
-    }else {
-        return <Navigate to="/signin" />;
-    }
+              // axios.get('http://localhost:4000/posts/')
+              //     .then(function (response) {
+              //         // handle success
+              //         console.log(response);
+              //     })
+              //     .catch(function (error) {
+              //         // handle error
+              //         console.log(error);
+              //     });
+              console.log(newPostFormData);
+            }}
+          >
+            Submit
+          </Button>
+        </Form>
+      </Container>
+    );
+  } else {
+    return <Navigate to="/signin" />;
+  }
 }
 
 export default NewPost;

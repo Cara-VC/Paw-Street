@@ -2,15 +2,14 @@ const express = require("express");
 const app = express();
 const configRoutes = require("./routes");
 const cors = require("cors");
+require("dotenv").config({ path: ".env" });
 
 // const redis = require("redis");
 // const client = redis.createClient();
 // client.connect().then(() => {});
 
 app.use(cors());
-
 app.use(express.json());
-
 
 //Check if character exists in cache. And store data in list.
 // app.use("/api/characters/:id", async (req, res, next) => {
