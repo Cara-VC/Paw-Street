@@ -55,6 +55,11 @@ function checkPageNum(pageNum) {
   return pageNum;
 }
 
+function checkToken(token) {
+  if (!token || typeof token !== "string") throw "Empty token.";
+  return token;
+}
+
 module.exports = {
   checkUsername,
   checkUserId,
@@ -65,4 +70,5 @@ module.exports = {
   checkComment,
   checkUserId,
   checkPageNum,
+  checkToken,
 };

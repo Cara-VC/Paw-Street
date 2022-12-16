@@ -29,7 +29,7 @@ function NewPost() {
       newPostFormData.set("petName", document.getElementById("petName").value);
       newPostFormData.set("longitude", lnglat.current[0]);
       newPostFormData.set("latitude", lnglat.current[1]);
-
+      //newPostFormData.set("token", currentUser.accessToken);
       newPostFormData.append(
         "image",
         document.getElementById("image").files[0]

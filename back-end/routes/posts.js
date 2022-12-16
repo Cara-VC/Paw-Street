@@ -4,6 +4,8 @@ const router = express.Router();
 const data = require("../data");
 const posts = data.posts;
 const checker = require("../public/util");
+// const firebase = require("../config/firebase/Firebase");
+// const auth = firebase.auth;
 const { shrinkImage } = require("../public/shrinkImage");
 const multer = require("multer");
 
@@ -74,10 +76,7 @@ router.get("/:longitude/:latitude", async (req, res) => {
 
 router.post("/", upload.single("image"), async (req, res) => {
   console.log("post /posts/");
-  //console.log(req.file);
-  //console.log(req.body.title);
   try {
-    //console.log(req.body);
     let userName = req.body.userName;
     let userId = req.body.userId;
     let status = req.body.status;
@@ -87,6 +86,18 @@ router.post("/", upload.single("image"), async (req, res) => {
     let longitude = req.body.longitude;
     let latitude = req.body.latitude;
     let petName = req.body.petName;
+    // let token = req.body.token;
+    // auth
+    //   .verifyIdToken(token)
+    //   .then((decodedToken) => {
+    //     const uid = decodedToken.uid;
+    //     console.log(uid);
+    //     console.log(userId);
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
+    //console.log("token", token);
 
     const newPost = await posts.creatPost(
       userName,
@@ -101,8 +112,8 @@ router.post("/", upload.single("image"), async (req, res) => {
     );
     res.status(200).json(newPost);
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: e });
+    //console.log(e);
+    res.status(500).json(`${e.message}`);
   }
 });
 
@@ -124,7 +135,7 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(thePost);
     //console.log("checkSweetId")
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     res.status(404).json({ message: e });
   }
 });
@@ -146,21 +157,23 @@ router.patch("/:id", async (req, res) => {
     }
     res.status(200).json(updatedPost);
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     res.status(500).json({ message: e });
   }
 });
 
 router.delete("/:id", async (req, res) => {
   console.log("delete /posts/:id", req.params.id);
+  //console.log("req.headers", req.headers.token);
   try {
     const postId = checker.checkPostId(req.params.id);
+    const token = checker.checkToken(req.headers.token);
     let exists = await client.exists(postId);
     if (exists) {
       console.log(`Delete posId ${postId} in Redis Cache.`);
       await client.del(postId);
     }
-    const result = await posts.deleteById(postId);
+    const result = await posts.deleteById(postId, token);
     res.status(200).json(result);
   } catch (e) {
     res.status(500).json({ message: e });
@@ -202,10 +215,12 @@ router.post("/:id/comment", async (req, res) => {
 
 router.delete("/:postId/:commentId", async (req, res) => {
   console.log("delete /posts/:postid/:commentid");
-  const commentId = req.params.commentId;
-  const postId = req.params.postId;
+
   try {
-    const result = await posts.deleteComment(commentId, postId);
+    const commentId = checker.checkPostId(req.params.commentId);
+    const postId = checker.checkPostId(req.params.postId);
+    const token = checker.checkToken(req.headers.token);
+    const result = await posts.deleteComment(commentId, postId, token);
     let exists = await client.exists(postId);
     if (exists) {
       console.log(`Update posId ${postId} in Redis Cache(delete comment).`);
@@ -213,7 +228,7 @@ router.delete("/:postId/:commentId", async (req, res) => {
     }
     res.status(200).json(result);
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     res.status(500).json({ message: e });
   }
 });

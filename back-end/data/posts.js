@@ -5,6 +5,7 @@ const { ObjectId } = require("mongodb");
 const geolib = require("geolib");
 const shrinkImage = require("../public/shrinkImage");
 const firebase = require("../config/firebase/Firebase");
+const auth = firebase.auth;
 const bucket = firebase.bucket;
 const uuid = require("uuid-v4");
 var fs = require("fs");
@@ -70,7 +71,6 @@ async function processImage(imageName) {
   shrinkImage.shrinkImage(`public/${imageName}`, `public/${outputName}`);
   const metadata = {
     metadata: {
-      // This line is very important. It's to create a download token.
       firebaseStorageDownloadTokens: uuid(),
     },
     contentType: "image",
@@ -79,7 +79,6 @@ async function processImage(imageName) {
   //console.log(outputName);
   await new Promise((r) => setTimeout(r, 1000));
   await bucket.upload(`public/${outputName}`, {
-    // Support for HTTP requests made with `Accept-Encoding: gzip`
     gzip: true,
     metadata: metadata,
   });
@@ -267,52 +266,64 @@ module.exports = {
   async patchById(postId, updatedInfo) {
     if (!updatedInfo) throw "No information to update.";
     postId = checker.checkPostId(postId);
-    let prevPost = await this.getPostById(postId);
-    let status = undefined;
-    if (!updatedInfo.status) status = prevPost.status;
-    else status = updatedInfo.status;
-    let title = undefined;
-    if (!updatedInfo.title) title = prevPost.title;
-    else title = updatedInfo.title;
-    let content = undefined;
-    if (!updatedInfo.content) content = prevPost.content;
-    else content = updatedInfo.content;
-    let image = undefined;
-    if (!updatedInfo.image) image = prevPost.image;
-    else image = updatedInfo.image;
-    // let longitude = undefined;
-    // if (!updatedInfo.longitude) longitude = prevPost.longitude;
-    // else longitude = updatedInfo.longitude;
-    // let latitude = undefined;
-    // if (!updatedInfo.latitude) latitude = prevPost.latitude;
-    // else latitude = updatedInfo.latitude;
-    let petName = undefined;
-    if (!updatedInfo.petName) petName = prevPost.petName;
-    else petName = updatedInfo.petName;
+    try {
+      let prevPost = await this.getPostById(postId);
+      let tokenFromFrontEnd = checker.checkToken(updatedInfo.token);
+      const verifyTokenResult = await auth.verifyIdToken(tokenFromFrontEnd);
+      if (verifyTokenResult.uid !== prevPost.userId) throw "uid no match";
 
-    const postsCollection = await postsCollections();
-    const updatedPost = await postsCollection.updateOne(
-      { _id: ObjectId(postId) },
-      {
-        $set: {
-          status: status,
-          title: title,
-          content: content,
-          image: image,
-          // longitude: longitude,
-          // latitude: latitude,
-          petName: petName,
-        },
-      }
-    );
+      let status = undefined;
+      if (!updatedInfo.status) status = prevPost.status;
+      else status = updatedInfo.status;
+      let title = undefined;
+      if (!updatedInfo.title) title = prevPost.title;
+      else title = updatedInfo.title;
+      let content = undefined;
+      if (!updatedInfo.content) content = prevPost.content;
+      else content = updatedInfo.content;
+      // let image = undefined;
+      // if (!updatedInfo.image) image = prevPost.image;
+      // else image = updatedInfo.image;
+      // let longitude = undefined;
+      // if (!updatedInfo.longitude) longitude = prevPost.longitude;
+      // else longitude = updatedInfo.longitude;
+      // let latitude = undefined;
+      // if (!updatedInfo.latitude) latitude = prevPost.latitude;
+      // else latitude = updatedInfo.latitude;
+      let petName = undefined;
+      if (!updatedInfo.petName) petName = prevPost.petName;
+      else petName = updatedInfo.petName;
 
-    if (updatedPost.modifiedCount == 0) throw "Unable to update post.";
+      const postsCollection = await postsCollections();
+      const updatedPost = await postsCollection.updateOne(
+        { _id: ObjectId(postId) },
+        {
+          $set: {
+            status: status,
+            title: title,
+            content: content,
+            image: image,
+            // longitude: longitude,
+            // latitude: latitude,
+            petName: petName,
+          },
+        }
+      );
+      if (updatedPost.modifiedCount == 0) throw "Unable to update post.";
+    } catch (e) {
+      //console.log(e);
+      throw `${e.message}`;
+    }
 
     return await this.getPostById(postId);
   },
 
-  async deleteById(postId) {
+  async deleteById(postId, token) {
     postId = checker.checkPostId(postId);
+    token = checker.checkToken(token);
+    let prevPost = await this.getPostById(postId);
+    const verifyTokenResult = await auth.verifyIdToken(token);
+    if (verifyTokenResult.uid !== prevPost.userId) throw "uid no match";
     const postsCollection = await postsCollections();
     try {
       const result = await postsCollection.deleteOne({ _id: ObjectId(postId) });
@@ -324,8 +335,8 @@ module.exports = {
       }
       return result;
     } catch (e) {
-      console.log(e);
-      throw e;
+      //console.log(e);
+      throw `${e.message}`;
     } finally {
       //await postsCollection.close();
     }
@@ -334,41 +345,67 @@ module.exports = {
   async addComment(userId, userName, comment, postId) {
     comment = checker.checkComment(comment);
     postId = checker.checkPostId(postId);
+    try {
+      const newComment = {
+        _id: ObjectId(),
+        userName: userName,
+        postId: postId,
+        userId: userId,
+        comment: comment,
+        //toUser: toUser,
+        time: Date.now(),
+      };
+      //console.log("newReply", newReply);
 
-    const newComment = {
-      _id: ObjectId(),
-      userName: userName,
-      postId: postId,
-      userId: userId,
-      comment: comment,
-      //toUser: toUser,
-      time: Date.now(),
-    };
-    //console.log("newReply", newReply);
+      const postsCollection = await postsCollections();
+      const updatedComment = await postsCollection.updateOne(
+        { _id: ObjectId(postId) },
+        { $addToSet: { comments: newComment } }
+      );
 
-    const postsCollection = await postsCollections();
-    const updatedComment = await postsCollection.updateOne(
-      { _id: ObjectId(postId) },
-      { $addToSet: { comments: newComment } }
-    );
+      if (updatedComment.modifiedCount == 0) throw "Unable to comment.";
 
-    if (updatedComment.modifiedCount == 0) throw "Unable to comment.";
-
-    return await this.getPostById(postId);
+      return await this.getPostById(postId);
+    } catch (e) {
+      `${e.message}`;
+    }
   },
 
-  async deleteComment(commentId, postId) {
+  async deleteComment(commentId, postId, token) {
     commentId = checker.checkPostId(commentId);
     postId = checker.checkPostId(postId);
+    token = checker.checkToken(token);
+    try {
+      const postsCollection = await postsCollections();
+      //const prevPost = await this.getPostById(postId);
+      let prevComment = await postsCollection.findOne(
+        {
+          //_id: ObjectId(postId),
+          "comments._id": ObjectId(commentId),
+        },
+        {
+          projection: {
+            _id: 0,
+            comments: { $elemMatch: { _id: ObjectId(commentId) } },
+          },
+        }
+      );
+      prevComment = prevComment.comments[0];
+      //console.log("comment", prevComment);
+      const verifyTokenResult = await auth.verifyIdToken(token);
+      if (verifyTokenResult.uid !== prevComment.userId) throw "uid no match";
 
-    const postsCollection = await postsCollections();
-    const deletedInfo = await postsCollection.updateOne(
-      { _id: ObjectId(postId) },
-      { $pull: { comments: { _id: ObjectId(commentId) } } }
-    );
+      const deletedInfo = await postsCollection.updateOne(
+        { _id: ObjectId(postId) },
+        { $pull: { comments: { _id: ObjectId(commentId) } } }
+      );
 
-    if (deletedInfo.deletedCount == 0) throw "Unable to deleted comment.";
+      if (deletedInfo.deletedCount == 0) throw "Unable to deleted comment.";
 
-    return await this.getPostById(postId);
+      return await this.getPostById(postId);
+    } catch (e) {
+      console.log(e.message);
+      throw `${e.message}`;
+    }
   },
 };
