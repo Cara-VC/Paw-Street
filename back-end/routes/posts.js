@@ -176,7 +176,8 @@ router.delete("/:id", async (req, res) => {
     const result = await posts.deleteById(postId, token);
     res.status(200).json(result);
   } catch (e) {
-    res.status(500).json({ message: e });
+    //console.log(e);
+    res.status(500).json({ e });
   }
 });
 

@@ -8,12 +8,13 @@ import {
   Card,
   Col,
 } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
 import ModalContext from "react-bootstrap/ModalContext";
 import Modal from "react-bootstrap/Modal";
+import DeletePostModal from "./modals/DeletePostModal";
 import { AuthContext } from "../firebase/Auth";
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
@@ -37,11 +38,64 @@ export default function MyPosts() {
   const [nextPage, setNextPage] = useState(false);
   const [originalData, setOriginalData] = useState([]);
   const [markerStack, setMarkerStack] = useState([]);
-  const [update, setUpdate] = useState(1);
-  const [show, setShow] = useState(false);
+  //const [update, setUpdate] = useState(1);
+  //const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  //const handleClose = () => setShow(false);
+  //const handleShow = () => setShow(true);
+
+  const [showDeletePostModal, setShowDeletePostModal] = useState(false);
+  const [deletePost, setDeletePost] = useState(null);
+  const [reloadAfterDeletePost, setReloadAfterDeletePost] = useState(false);
+  const handleDeletePostModal = (post) => {
+    setShowDeletePostModal(true);
+    setDeletePost(post);
+  };
+
+  const handleCloseModal = () => {
+    setShowDeletePostModal(false);
+    setReloadAfterDeletePost(!reloadAfterDeletePost);
+  };
+
+  const fetchData = async () => {
+    try {
+      await axios
+        .get(`http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum}`)
+        .then(function (response) {
+          setOriginalData(response.data);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        });
+      await axios
+        .get(
+          `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum + 1}`
+        )
+        .then(function (response) {
+          if (response.data.length != 0) {
+            setNextPage(true);
+          } else {
+            setNextPage(false);
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        });
+
+      await navigator.geolocation.getCurrentPosition(function (position) {
+        lnglat.current = [position.coords.longitude, position.coords.latitude];
+        currentLocationMarker.setLngLat(lnglat.current);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -64,88 +118,8 @@ export default function MyPosts() {
   }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        await axios
-          .get(
-            `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum}`
-          )
-          .then(function (response) {
-            setOriginalData(response.data);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-        await axios
-          .get(
-            `http://localhost:4000/user/${currentUser.uid}?pagenum=${
-              pagenum + 1
-            }`
-          )
-          .then(function (response) {
-            if (response.data.length != 0) {
-              setNextPage(true);
-            } else {
-              setNextPage(false);
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-
-        await navigator.geolocation.getCurrentPosition(function (position) {
-          lnglat.current = [
-            position.coords.longitude,
-            position.coords.latitude,
-          ];
-          currentLocationMarker.setLngLat(lnglat.current);
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
     fetchData();
-  }, []);
-  useEffect(() => {
-    async function changePage() {
-      try {
-        await axios
-          .get(
-            `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum}`
-          )
-          .then(function (response) {
-            setOriginalData(response.data);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-        await axios
-          .get(
-            `http://localhost:4000/user/${currentUser.uid}?pagenum=${
-              pagenum + 1
-            }`
-          )
-          .then(function (response) {
-            if (response.data.length != 0) {
-              setNextPage(true);
-            } else {
-              setNextPage(false);
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    changePage();
-  }, [pagenum]);
+  }, [pagenum, reloadAfterDeletePost]);
 
   useEffect(() => {
     if (originalData) {
@@ -190,7 +164,7 @@ export default function MyPosts() {
     <Container>
       <h1>My Posts</h1>
       {!originalData ? null : originalData && originalData == [] ? (
-        <h2>It seems like you do not have any post. :(</h2>
+        <h2>It seems like you do not have any post. :</h2>
       ) : (
         <Row>
           <Col>
@@ -243,7 +217,7 @@ export default function MyPosts() {
               {!originalData
                 ? null
                 : originalData.map((ele) => {
-                    console.log("ele", ele._id, ele.userName);
+                    //console.log("ele", ele._id, ele.userName);
                     return (
                       <Card
                         className="square border border-5"
@@ -302,7 +276,9 @@ export default function MyPosts() {
                           <Button
                             variant="primary"
                             onClick={() => {
-                              navigate("/Edit", { state: { postId: ele._id } });
+                              navigate("/Edit", {
+                                state: { postId: ele._id },
+                              });
                             }}
                           >
                             Edit
@@ -310,55 +286,18 @@ export default function MyPosts() {
                           <Button
                             variant="primary"
                             onClick={() => {
-                              handleShow();
+                              handleDeletePostModal(ele);
                             }}
                           >
                             Delete
                           </Button>
-                          <Modal show={show} onHide={handleClose}>
-                            <Modal.Header closeButton>
-                              <Modal.Title>Delete Comfirm</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                              Are you sure about deleting?
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button variant="secondary" onClick={handleClose}>
-                                No
-                              </Button>
-                              <Button
-                                variant="danger"
-                                onClick={() => {
-                                  axios
-                                    .delete(
-                                      `http://localhost:4000/posts/${ele._id}`,
-                                      {
-                                        headers: {
-                                          token: currentUser.accessToken,
-                                        },
-                                      }
-                                    )
-                                    .then(function (response) {
-                                      if (response.data.deletedCount == 1) {
-                                        alert("Successfully deleted!");
-                                        let newUpdate = update + 1;
-                                        setUpdate(newUpdate);
-                                      } else {
-                                        alert("Deleted fail!");
-                                      }
-                                    })
-                                    .catch(function (error) {
-                                      // handle error
-                                      alert(error);
-                                    });
-
-                                  handleClose();
-                                }}
-                              >
-                                Yes
-                              </Button>
-                            </Modal.Footer>
-                          </Modal>
+                          {showDeletePostModal && (
+                            <DeletePostModal
+                              isOpen={showDeletePostModal}
+                              handleClose={handleCloseModal}
+                              deletePost={deletePost}
+                            />
+                          )}
                         </Card.Body>
                       </Card>
                     );

@@ -302,7 +302,7 @@ module.exports = {
             status: status,
             title: title,
             content: content,
-            image: image,
+            //image: image,
             // longitude: longitude,
             // latitude: latitude,
             petName: petName,
