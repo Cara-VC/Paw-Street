@@ -4,6 +4,9 @@ import { doCreateUserWithEmailAndPassword } from "../firebase/FirebaseFunctions"
 import { AuthContext } from "../firebase/Auth";
 import SocialSignIn from "./SocialSignIn";
 import { getAuth } from "firebase/auth";
+import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
+  checkLongitude, checkLatitude, checkImage, checkPassword, checkEmail} from "./validation/validation"
+  
 function SignUp() {
 
   const {currentUser} = useContext(AuthContext);
@@ -19,12 +22,12 @@ function SignUp() {
 
     try {
       await doCreateUserWithEmailAndPassword(
-        email.value,
-        passwordOne.value,
-        displayName.value
+        checkEmail(email.value),
+        checkPassword(passwordOne.value),
+        checkUserName(displayName.value)
       );
     } catch (error) {
-      alert(error);
+      alert(error)
     }
   };
 

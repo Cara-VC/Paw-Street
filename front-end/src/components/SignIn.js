@@ -7,6 +7,8 @@ import {
   doPasswordReset,
 } from "../firebase/FirebaseFunctions";
 import { getAuth } from "firebase/auth";
+import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
+  checkLongitude, checkLatitude, checkImage, checkPassword, checkEmail} from "./validation/validation"
 
 function SignIn() {
   const auth = getAuth();
@@ -16,10 +18,13 @@ function SignIn() {
     let { email, password } = event.target.elements;
 
     try {
-      await doSignInWithEmailAndPassword(email.value, password.value);
+      await doSignInWithEmailAndPassword(checkEmail(email.value), password.value);
       // setCurrentUser(auth.currentUser);
     } catch (error) {
-      alert(error);
+      console.log(error.code)
+      if (error.code==="auth/user-not-found") alert("This email have not sign up. Please sign up first.")
+      else if (error.code==="auth/wrong-password") alert("Username and password do not match. Please check your input.")
+      else alert(error.message);
     }
   };
 

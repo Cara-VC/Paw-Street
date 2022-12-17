@@ -24,7 +24,8 @@ async function doCreateUserWithEmailAndPassword(email, password, displayName) {
       const errorCode = error.code;
       const errorMessage = error.message;
       //console.log(errorCode, errorMessage);
-      alert(errorMessage);
+      if (errorCode==="auth/email-already-in-use") alert("The email is already used, please login")
+      else alert(errorMessage);
     });
 }
 

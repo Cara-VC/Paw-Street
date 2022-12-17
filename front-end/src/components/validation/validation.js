@@ -15,10 +15,11 @@ module.exports = {
         return userId
     },
     checkUserName(userName){
-        if(!userName) throw "userName is lost"
+        if(!userName) throw "userName is lost, please check"
         if(typeof userName!== "string") throw "The userName should be a string"
         userName=userName.trim()
-        if(userName.length===0) throw "The userName is empty"
+        if(userName.length===0) throw "The userName should not be empty string"
+        if(userName<4) throw "The userName should be at least 4 characters"
         return userName
     },
     checkStatus(status){
@@ -62,5 +63,34 @@ module.exports = {
         let ext = image['name'].slice(image['name'].lastIndexOf(".")+1)
         if(['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff'].indexOf(ext.toLowerCase())===-1) throw "The upload file is not a image"
         return image
+    },
+    checkPassword(password){
+        if(!password) throw "You should input a password";
+        if(typeof password!== "string") throw "The password should be a string"
+
+        if(password.length===0) throw "The password should not be empty"
+        if(password.length<8) throw "The password should include at least 8 characters"
+
+        const pwdRegex = new RegExp("^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[_!@#\\$%\\^&\\*`~()\\-\\+=])[0-9a-zA-Z_!@#\\$%\\^&\\*`~()\\-\\+=]{8,30}$")
+        if (!pwdRegex.test(password)) throw "The password should contain upper and lower case letters, numbers and special symbols '`_!@#$%^&*~()-+=', and the length between 8-16 bits"
+        
+        return password
+    },
+    checkEmail(email,...theArgs){
+        if(!email) throw "You should input a email";
+        if(typeof email !== 'string') throw "The email should be a string.";
+        if(theArgs.length>0) throw "The email place should be only 1 input.";
+        if(!email.includes('@')) throw "There should include a '@' in the email.";
+
+        email=email.trim()
+        if(email.slice(0,email.lastIndexOf('@')).trim().length===0) throw "The email address name should not be empty"
+
+        let emailDomain=email.slice(email.lastIndexOf('@')+1).trim()
+        if(emailDomain.length === 0) throw "The emailDomain should not be an empty string.";
+        if(!emailDomain.includes('.')) throw "There should include a '.' in the emailDomain.";
+        if(!/^[a-zA-Z]*$/.test(emailDomain[0])) throw "The first position of emailDomain must be a letter.";
+        if(emailDomain.slice(emailDomain.lastIndexOf('.')).slice(1).length<2) throw "At Least 2 LETTERS after the dot of the emailDomain.";
+        if(Number(emailDomain.slice(emailDomain.lastIndexOf('.')).slice(1))) throw "The last dot cannot be followed by a number only in the emailDomain.";
+        return email
     }
 }
