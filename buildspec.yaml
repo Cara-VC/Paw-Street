@@ -17,10 +17,10 @@ artifacts:
     - front-end/public/**/*
     - front-end/src/**/*
     - front-end/package.json
-    - back-end/config/*
-    - back-end/data/*
-    - back-end/public/*
-    - back-end/routes/*
+    - back-end/config/**/*
+    - back-end/data/**/*
+    - back-end/public/**/*
+    - back-end/routes/**/*
     - back-end/app.js
     - back-end/package.json
     - appspec.yml
