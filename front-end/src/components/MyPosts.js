@@ -54,6 +54,7 @@ export default function MyPosts() {
 
   const handleCloseModal = () => {
     setShowDeletePostModal(false);
+    setDeletePost(null);
     setReloadAfterDeletePost(!reloadAfterDeletePost);
   };
 
@@ -220,6 +221,7 @@ export default function MyPosts() {
                     //console.log("ele", ele._id, ele.userName);
                     return (
                       <Card
+                        key={ele._id}
                         className="square border border-5"
                         style={{ width: "25rem" }}
                         border={
@@ -294,7 +296,8 @@ export default function MyPosts() {
                           {showDeletePostModal && (
                             <DeletePostModal
                               isOpen={showDeletePostModal}
-                              handleClose={handleCloseModal}
+                              handleCloseWithYes={handleCloseModal}
+                              handleCloseWithNo={handleCloseModal}
                               deletePost={deletePost}
                             />
                           )}

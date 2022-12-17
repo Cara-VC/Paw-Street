@@ -18,6 +18,8 @@ import axios from "axios";
 import { Navigate } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Carousel from "react-bootstrap/Carousel";
+import DeleteCommentModal from "./modals/DeleteCommentModal";
+import DeletePostModal from "./modals/DeletePostModal";
 
 export default function Detail() {
   const { currentUser } = useContext(AuthContext);
@@ -28,14 +30,47 @@ export default function Detail() {
   const map = useRef(null);
 
   const [update, setUpdate] = useState(1);
-  const [show, setShow] = useState(false);
-  const [show2, setShow2] = useState(false);
+  // const [show, setShow] = useState(false);
+  // const [show2, setShow2] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
-  const handleClose2 = () => setShow2(false);
-  const handleShow2 = () => setShow2(true);
+  // const handleClose2 = () => setShow2(false);
+  // const handleShow2 = () => setShow2(true);
+
+  const [showDeletePostModal, setShowDeletePostModal] = useState(false);
+  const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
+  const [deletePost, setDeletePost] = useState(null);
+  const [deleteComment, setDeleteComment] = useState(null);
+  const [reloadAfterDelete, setReloadAfterDelete] = useState(false);
+
+  const handleDeletePost = (post) => {
+    setShowDeletePostModal(true);
+    setDeletePost(post);
+  };
+
+  const handleDeleteComment = (post, comment) => {
+    setShowDeleteCommentModal(true);
+    setDeletePost(post);
+    setDeleteComment(comment);
+  };
+
+  const handleCloseModalNavigation = () => {
+    setShowDeletePostModal(false);
+    setShowDeleteCommentModal(false);
+    setDeletePost(null);
+    setDeleteComment(null);
+    navigate("/MyPosts");
+  };
+
+  const handleCloseModal = () => {
+    setShowDeletePostModal(false);
+    setShowDeleteCommentModal(false);
+    setDeletePost(null);
+    setDeleteComment(null);
+    setReloadAfterDelete(!reloadAfterDelete);
+  };
 
   const [index, setIndex] = useState(0);
   const handleSelect = (selectedIndex, e) => {
@@ -54,33 +89,35 @@ export default function Detail() {
     .setLngLat(lnglat.current)
     .setPopup(popup1);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        await axios
-          .get(`http://localhost:4000/posts/${location.state.postId}`)
-          .then(function (response) {
-            setOriginalData(response.data);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-        // await setOriginalData(singleFakeData);
-        navigator.geolocation.getCurrentPosition(function (position) {
-          lnglat.current = [
-            position.coords.longitude,
-            position.coords.latitude,
-          ];
-          currentLocationMarker.setLngLat(lnglat.current);
+  const fetchData = async () => {
+    try {
+      await axios
+        .get(`http://localhost:4000/posts/${location.state.postId}`)
+        .then(function (response) {
+          setOriginalData(response.data);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          navigate("/MyPosts");
         });
-      } catch (e) {
-        console.log(e);
-      }
+      // await setOriginalData(singleFakeData);
+      navigator.geolocation.getCurrentPosition(function (position) {
+        lnglat.current = [position.coords.longitude, position.coords.latitude];
+        currentLocationMarker.setLngLat(lnglat.current);
+      });
+    } catch (e) {
+      console.log(e);
     }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [update, reloadAfterDelete]);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -203,55 +240,21 @@ export default function Detail() {
                     <Button
                       variant="primary"
                       onClick={() => {
-                        handleShow();
+                        handleDeletePost(originalData);
                       }}
                     >
                       Delete
                     </Button>
                   ) : null}
+                  {showDeletePostModal && (
+                    <DeletePostModal
+                      isOpen={showDeletePostModal}
+                      handleCloseWithYes={handleCloseModalNavigation}
+                      handleCloseWithNo={handleCloseModal}
+                      deletePost={deletePost}
+                    />
+                  )}
                 </Card.Body>
-                <Modal show={show} onHide={handleClose}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Delete Comfirm</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>Are you sure about deleting?</Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                      No
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={async () => {
-                        await axios
-                          .delete(
-                            `http://localhost:4000/posts/${originalData._id}`,
-                            {
-                              headers: {
-                                token: currentUser.accessToken,
-                              },
-                            }
-                          )
-                          .then(function (response) {
-                            if (response.data.deletedCount == 1) {
-                              alert("Successfully deleted!");
-                              navigate("/");
-                            } else {
-                              alert("Deleted fail!");
-                            }
-                          })
-                          .catch(function (error) {
-                            // handle error
-                            alert(error);
-                          });
-
-                        handleClose();
-                      }}
-                    >
-                      Yes
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-
                 <Card.Body>
                   <Card.Title>Comments:</Card.Title>
                   <Form.Group className="mb-3" xs={10}>
@@ -325,55 +328,21 @@ export default function Detail() {
                               <Button
                                 variant="primary"
                                 onClick={() => {
-                                  handleShow2();
+                                  handleDeleteComment(originalData, ele);
                                 }}
                               >
                                 Delete
                               </Button>
                             ) : null}
 
-                            <Modal show={show2} onHide={handleClose2}>
-                              <Modal.Header closeButton>
-                                <Modal.Title>Delete Comfirm</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                Are you sure about deleting?
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="secondary"
-                                  onClick={handleClose2}
-                                >
-                                  No
-                                </Button>
-                                <Button
-                                  variant="danger"
-                                  onClick={async () => {
-                                    await axios
-                                      .delete(
-                                        `http://localhost:4000/posts/${originalData._id}/${ele._id}`,
-                                        {
-                                          headers: {
-                                            token: currentUser.accessToken,
-                                          },
-                                        }
-                                      )
-                                      .then(function (response) {
-                                        alert("Successfully deleted!");
-                                        setUpdate((update) => update + 1);
-                                      })
-                                      .catch(function (error) {
-                                        // handle error
-                                        alert(error);
-                                      });
-
-                                    handleClose2();
-                                  }}
-                                >
-                                  Yes
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
+                            {showDeleteCommentModal && (
+                              <DeleteCommentModal
+                                isOpen={showDeleteCommentModal}
+                                handleClose={handleCloseModal}
+                                deletePost={deletePost}
+                                deleteComment={deleteComment}
+                              />
+                            )}
                           </Card>
                         );
                       })}

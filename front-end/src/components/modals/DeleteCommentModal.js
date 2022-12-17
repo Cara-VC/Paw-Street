@@ -4,20 +4,23 @@ import { Button } from "react-bootstrap";
 import axios from "axios";
 import { AuthContext } from "../../firebase/Auth";
 
-function DeletePostModal(props) {
+export default function DeleteCommentModal(props) {
   const { currentUser } = useContext(AuthContext);
-  const [showDeletePostModal, setShowDeletePostModal] = useState(props.isOpen);
+  const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(
+    props.isOpen
+  );
   const [post, setPost] = useState(props.deletePost);
+  const [comment, setComment] = useState(props.deleteComment);
 
-  const handleDeletePost = () => {
+  const handleDeleteComment = () => {
     axios
-      .delete(`http://localhost:4000/posts/${post._id}`, {
+      .delete(`http://localhost:4000/posts/${post._id}/${comment._id}`, {
         headers: {
           token: currentUser.accessToken,
         },
       })
       .then(function (response) {
-        if (response.data.deletedCount === 1) {
+        if (response.status === 200) {
           alert("Successfully deleted!");
         } else {
           alert("Deleted fail!");
@@ -26,20 +29,19 @@ function DeletePostModal(props) {
       .catch(function (error) {
         alert(error);
       });
-    setShowDeletePostModal(false);
-    setPost(null);
-    props.handleCloseWithYes();
+    handleCloseDeleteModal();
   };
 
   const handleCloseDeleteModal = () => {
-    setShowDeletePostModal(false);
+    setShowDeleteCommentModal(false);
     setPost(null);
-    props.handleCloseWithNo();
+    setComment(null);
+    props.handleClose();
   };
 
   return (
     <div>
-      <Modal show={showDeletePostModal} onHide={handleCloseDeleteModal}>
+      <Modal show={showDeleteCommentModal} onHide={handleCloseDeleteModal}>
         <Modal.Header closeButton>
           <Modal.Title>Delete Comfirm</Modal.Title>
         </Modal.Header>
@@ -48,7 +50,7 @@ function DeletePostModal(props) {
           <Button variant="secondary" onClick={handleCloseDeleteModal}>
             No
           </Button>
-          <Button variant="danger" onClick={handleDeletePost}>
+          <Button variant="danger" onClick={handleDeleteComment}>
             Yes
           </Button>
         </Modal.Footer>
@@ -56,4 +58,3 @@ function DeletePostModal(props) {
     </div>
   );
 }
-export default DeletePostModal;
