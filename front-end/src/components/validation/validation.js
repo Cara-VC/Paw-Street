@@ -72,7 +72,19 @@ module.exports = {
         if(password.length<8) throw "The password should include at least 8 characters"
 
         const pwdRegex = new RegExp("^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[_!@#\\$%\\^&\\*`~()\\-\\+=])[0-9a-zA-Z_!@#\\$%\\^&\\*`~()\\-\\+=]{8,30}$")
-        if (!pwdRegex.test(password)) throw "The password should contain upper and lower case letters, numbers and special symbols '`_!@#$%^&*~()-+=', and the length between 8-16 bits"
+        if (!pwdRegex.test(password)) throw "The password should contain upper and lower case letters, numbers and special symbols '`_!@#$%^&*~()-+=', and the length between 8-30 bits"
+        
+        return password
+    },
+    checkNewPassword(password){
+        if(!password) throw "You should input the new password";
+        if(typeof password!== "string") throw "The new password should be a string"
+
+        if(password.length===0) throw "The new password should not be empty"
+        if(password.length<8) throw "The new password should include at least 8 characters"
+
+        const pwdRegex = new RegExp("^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[_!@#\\$%\\^&\\*`~()\\-\\+=])[0-9a-zA-Z_!@#\\$%\\^&\\*`~()\\-\\+=]{8,30}$")
+        if (!pwdRegex.test(password)) throw "The new password should contain upper and lower case letters, numbers and special symbols '`_!@#$%^&*~()-+=', and the length between 8-30 bits"
         
         return password
     },
@@ -81,6 +93,7 @@ module.exports = {
         if(typeof email !== 'string') throw "The email should be a string.";
         if(theArgs.length>0) throw "The email place should be only 1 input.";
         if(!email.includes('@')) throw "There should include a '@' in the email.";
+        if(email.includes(' ')) throw "The space should not include in the email address";
 
         email=email.trim()
         if(email.slice(0,email.lastIndexOf('@')).trim().length===0) throw "The email address name should not be empty"

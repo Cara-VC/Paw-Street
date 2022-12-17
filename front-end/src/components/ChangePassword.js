@@ -4,6 +4,8 @@ import { doChangePassword, doSignOut } from "../firebase/FirebaseFunctions";
 import "../App.css";
 import { getAuth } from "firebase/auth";
 import { Navigate } from "react-router-dom";
+import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
+  checkLongitude, checkLatitude, checkImage, checkPassword, checkEmail, checkNewPassword} from "./validation/validation"
 
 function ChangePassword() {
   const auth = getAuth();
@@ -24,15 +26,18 @@ function ChangePassword() {
 
     try {
       await doChangePassword(
-        currentUser.email,
+        checkEmail(currentUser.email),
         currentPassword.value,
-        newPasswordOne.value
+        checkNewPassword(newPasswordOne.value)
       );
       //console.log("chagepswd curuser 2", auth.currentUser);
       alert("Password has been changed, you will now be logged out");
       await doSignOut();
     } catch (error) {
-      alert(error);
+      if (error.code==="auth/wrong-password") alert("The current password is wrong. Please input it again.")
+      else if (error.code==="auth/too-many-requests") alert("Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. ")
+      else if (!error.message) alert(error)
+      else alert(error.message);
     }
   };
   //console.log("chagepswd curuser 3", auth.currentUser);
@@ -90,6 +95,11 @@ function ChangePassword() {
             </label>
           </div>
 
+          <br />
+          <span>The new password should contain upper and lower case letters, 
+            numbers and special symbols '`_!@#$%^&*~()-+=', and the length between 8-30 bits.</span>
+          <br />
+          <br />
           <button type="submit">Change Password</button>
         </form>
         <br />

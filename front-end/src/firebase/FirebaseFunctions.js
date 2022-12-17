@@ -69,7 +69,17 @@ async function doSocialSignIn(provider) {
 }
 
 async function doPasswordReset(email) {
-  await sendPasswordResetEmail(auth, email);
+  let ifSend=true
+  await sendPasswordResetEmail(auth, email)
+  .catch((error) => {
+    ifSend=false
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    if(errorCode==="auth/user-not-found") alert("The email have not been sign up. Please sign up first.");
+    else if (errorCode==="auth/invalid-email") alert("The email address is invalid. Please check.")
+    else alert(errorMessage)
+  });
+  return ifSend
 }
 
 async function doSignOut() {

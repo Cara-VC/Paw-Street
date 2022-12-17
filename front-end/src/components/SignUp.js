@@ -91,6 +91,11 @@ function SignUp() {
             />
           </label>
         </div>
+        <br />
+        <span>The password should contain upper and lower case letters, 
+            numbers and special symbols '`_!@#$%^&*~()-+=', and the length between 8-30 bits.</span>
+          <br />
+          <br />
         <button id="submitButton" name="submitButton" type="submit">
           Sign Up
         </button>
