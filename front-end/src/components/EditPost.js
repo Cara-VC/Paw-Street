@@ -17,7 +17,7 @@ function EditPost() {
     async function fetchData() {
       try {
         await axios
-          .get(`http://localhost:4000/posts/${location.state.postId}`)
+          .get(`http://3.94.145.116:4000/posts/${location.state.postId}`)
           .then(function (response) {
             setOriginalData(response.data);
           })
@@ -108,7 +108,7 @@ function EditPost() {
 
                     axios
                       .patch(
-                        `http://localhost:4000/posts/${location.state.postId}`,
+                        `http://3.94.145.116:4000/posts/${location.state.postId}`,
                         newPost
                       )
                       .then(function (response) {

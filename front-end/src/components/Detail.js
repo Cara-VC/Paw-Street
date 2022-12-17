@@ -92,7 +92,7 @@ export default function Detail() {
   const fetchData = async () => {
     try {
       await axios
-        .get(`http://localhost:4000/posts/${location.state.postId}`)
+        .get(`http://3.94.145.116:4000/posts/${location.state.postId}`)
         .then(function (response) {
           setOriginalData(response.data);
         })
@@ -278,7 +278,7 @@ export default function Detail() {
                             };
                             await axios
                               .post(
-                                `http://localhost:4000/posts/${originalData._id}/comment`,
+                                `http://3.94.145.116:4000/posts/${originalData._id}/comment`,
                                 newComment
                               )
                               .then(function (response) {

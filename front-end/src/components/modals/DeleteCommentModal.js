@@ -14,7 +14,7 @@ export default function DeleteCommentModal(props) {
 
   const handleDeleteComment = () => {
     axios
-      .delete(`http://localhost:4000/posts/${post._id}/${comment._id}`, {
+      .delete(`http://3.94.145.116:4000/posts/${post._id}/${comment._id}`, {
         headers: {
           token: currentUser.accessToken,
         },
