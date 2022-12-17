@@ -12,6 +12,8 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { storage } from "../firebase/Firebase";
+import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
+       checkLongitude, checkLatitude, checkImage} from "./validation/validation"
 
 function NewPost() {
   const { currentUser } = useContext(AuthContext);
@@ -28,21 +30,22 @@ function NewPost() {
     //   console.log(currentUser.displayName,typeof currentUser.displayName)
       
       let newPostFormData = new FormData();
-      newPostFormData.set("title", document.getElementById("title").value);
-      newPostFormData.set("userId", currentUser.uid);
-      newPostFormData.set("userName", currentUser.displayName);
-      newPostFormData.set("status", document.getElementById("status").value);
-      newPostFormData.set("content", document.getElementById("content").value);
-      newPostFormData.set("petName", document.getElementById("petName").value);
-      newPostFormData.set("longitude", lnglat.current[0]);
-      newPostFormData.set("latitude", lnglat.current[1]);
+      newPostFormData.set("title", checkTitle(document.getElementById("title").value));
+      newPostFormData.set("userId", checkUserId(currentUser.uid));
+      newPostFormData.set("userName", checkUserName(currentUser.displayName));
+      newPostFormData.set("status", checkStatus(document.getElementById("status").value));
+      newPostFormData.set("content", checkContent(document.getElementById("content").value));
+      newPostFormData.set("petName", checkPetName(document.getElementById("petName").value));
+      newPostFormData.set("longitude", checkLongitude(lnglat.current[0]));
+      newPostFormData.set("latitude", checkLatitude(lnglat.current[1]));
       //newPostFormData.set("token", currentUser.accessToken);
+
       newPostFormData.append(
         "image",
-        document.getElementById("image").files[0]
+        checkImage(document.getElementById("image").files[0])
       );
-      console.log(document.getElementById("image").files[0],typeof document.getElementById("image").files[0])
-      console.log(document.getElementById("image").files[0]['name'])
+      //console.log(document.getElementById("image").files[0],typeof document.getElementById("image").files[0])
+      //console.log(document.getElementById("image").files[0]['name'])
 
       axios
         .post("http://localhost:4000/posts/", newPostFormData)

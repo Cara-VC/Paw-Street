@@ -24,8 +24,8 @@ module.exports = {
     checkStatus(status){
         if(!status) throw "status is lost"
         if(typeof status!== "string") throw "The status should be a string"
-        userName=userName.trim().toLowerCase()
-        if(status!=="story"||status!=="lost"||status!=="found") throw "status should be one of in 'story', 'lost', 'found'"
+        status=status.trim()
+        if(status.toLowerCase()!=="story"&&status.toLowerCase()!=="lost"&&status.toLowerCase()!=="found") throw "status should be one of in 'story', 'lost', 'found'"
         return status
     },
     checkContent(content){
@@ -60,19 +60,7 @@ module.exports = {
         if(image instanceof File===false) throw "The type of your upload is not a file"
         if(image['name'].lastIndexOf(".")===-1) throw "The image lost the endfixes"
         let ext = image['name'].slice(image['name'].lastIndexOf(".")+1)
-        if(['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff'].indexOf(ext.toLowerCase())===-1) return "The upload file is not a image"
-    },
-
-    checkPage(num){
-        if (num === undefined) throw "You should input a page";
-        if (typeof num !== "string") throw "The input page should be a string"
-
-        num=num.trim()
-        if(num.length===0) throw "The input page is an empty string"
-        if (! /^[0-9]+$/.test(num)) throw "The page could only conclude numbers";
-        num=Number(num)
-        if (num<1 || num%1 !== 0) throw "The page should be a positive integer"
-
-        return num.toString()
+        if(['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff'].indexOf(ext.toLowerCase())===-1) throw "The upload file is not a image"
+        return image
     }
 }
