@@ -20,6 +20,13 @@ function NewPost() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+    //   console.log(document.getElementById("title").value,typeof document.getElementById("title").value)
+    //   console.log(document.getElementById("status").value,typeof document.getElementById("status").value)
+    //   console.log(lnglat.current[0],typeof lnglat.current[0])
+    //   console.log(document.getElementById("image").files[0],typeof document.getElementById("image").files[0])
+    //   console.log(currentUser.uid,typeof currentUser.uid)
+    //   console.log(currentUser.displayName,typeof currentUser.displayName)
+      
       let newPostFormData = new FormData();
       newPostFormData.set("title", document.getElementById("title").value);
       newPostFormData.set("userId", currentUser.uid);
@@ -34,6 +41,8 @@ function NewPost() {
         "image",
         document.getElementById("image").files[0]
       );
+      console.log(document.getElementById("image").files[0],typeof document.getElementById("image").files[0])
+      console.log(document.getElementById("image").files[0]['name'])
 
       axios
         .post("http://localhost:4000/posts/", newPostFormData)
