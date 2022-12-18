@@ -42,6 +42,7 @@ export default function Detail() {
   // const handleClose2 = () => setShow2(false);
   // const handleShow2 = () => setShow2(true);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [showDeletePostModal, setShowDeletePostModal] = useState(false);
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
   const [deletePost, setDeletePost] = useState(null);
@@ -105,21 +106,25 @@ export default function Detail() {
           navigate("/MyPosts");
         });
       // await setOriginalData(singleFakeData);
-      navigator.geolocation.getCurrentPosition(function (position) {
-        lnglat.current = [position.coords.longitude, position.coords.latitude];
-        currentLocationMarker.setLngLat(lnglat.current);
-      });
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchData();
+    navigator.geolocation.getCurrentPosition(function (position) {
+      lnglat.current = [position.coords.longitude, position.coords.latitude];
+      currentLocationMarker.setLngLat(lnglat.current);
+    });
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     fetchData();
+    setIsLoading(false);
   }, [update, reloadAfterDelete]);
 
   useEffect(() => {
@@ -164,7 +169,7 @@ export default function Detail() {
     return (
       <Container>
         <Row>
-          {!originalData ? null : (
+          {!originalData || isLoading ? null : (
             <Col>
               <Card
                 className="square border border-5"
