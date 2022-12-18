@@ -1,6 +1,6 @@
 var fs = require("fs");
 const gm = require("gm").subClass({
-  imageMagick: "7+",
+  imageMagick: true,
   //	 appPath: String.raw`C:\Program Files\ImageMagick\magick.exe`
 });
 
