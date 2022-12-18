@@ -323,7 +323,7 @@ module.exports = {
     token = checker.checkToken(token);
     let prevPost = await this.getPostById(postId);
     const verifyTokenResult = await auth.verifyIdToken(token);
-    if (verifyTokenResult.uid !== prevPost.userId) throw "uid no match";
+    if (verifyTokenResult.uid !== prevPost.userId) throw "uid no match, you can not delete other users post";
     const postsCollection = await postsCollections();
     try {
       const result = await postsCollection.deleteOne({ _id: ObjectId(postId) });

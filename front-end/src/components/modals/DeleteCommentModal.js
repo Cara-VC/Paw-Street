@@ -12,24 +12,29 @@ export default function DeleteCommentModal(props) {
   const [post, setPost] = useState(props.deletePost);
   const [comment, setComment] = useState(props.deleteComment);
 
-  const handleDeleteComment = () => {
-    axios
-      .delete(`http://localhost:4000/posts/${post._id}/${comment._id}`, {
-        headers: {
-          token: currentUser.accessToken,
-        },
-      })
-      .then(function (response) {
-        if (response.status === 200) {
-          alert("Successfully deleted!");
-        } else {
-          alert("Deleted fail!");
-        }
-      })
-      .catch(function (error) {
-        alert(error);
-      });
-    handleCloseDeleteModal();
+  const handleDeleteComment = async () => {
+    console.log(comment.userName, typeof comment.userName)
+    console.log(currentUser.displayName, typeof currentUser.displayName)
+    if (comment.userName!==currentUser.displayName) alert("Deleted fail. You could not delete other users comment.")
+    else {
+        await axios
+        .delete(`http://localhost:4000/posts/${post._id}/${comment._id}`, {
+          headers: {
+            token: currentUser.accessToken,
+          },
+        })
+        .then(function (response) {
+          if (response.status === 200) {
+            alert("Successfully deleted!");
+          } else {
+            alert("Deleted fail!");
+          }
+        })
+        .catch(function (error) {
+          alert(error.message);
+        });
+      handleCloseDeleteModal();
+    }
   };
 
   const handleCloseDeleteModal = () => {

@@ -20,7 +20,8 @@ const Navigation = () => {
         return(
             <Navbar bg="light" expand="lg">
                 <Container>
-                        <Nav>
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="ml-auto">
                             
                             <NavLink to="/" style={{ textDecoration: 'none' , color:'black' ,marginRight:"25px"}} xs={2} >
                                 <img src="imgs/pawicon.png" style={{ width: '2rem' }}></img>
@@ -30,13 +31,12 @@ const Navigation = () => {
 
                             <NavLink to="/MyPosts" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>My Posts</NavLink>
 
-                            <NavLink to="/Profile" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Profile</NavLink>
-
                             <NavLink to="/NewPost" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>New Post</NavLink>
 
+                            <NavLink to="/Profile" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Hello, {currentUser.displayName}</NavLink>
                         </Nav>
 
-
+                    </Navbar.Collapse>
                 </Container>
             </Navbar>
         );

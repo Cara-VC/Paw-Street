@@ -105,5 +105,13 @@ module.exports = {
         if(emailDomain.slice(emailDomain.lastIndexOf('.')).slice(1).length<2) throw "At Least 2 LETTERS after the dot of the emailDomain.";
         if(Number(emailDomain.slice(emailDomain.lastIndexOf('.')).slice(1))) throw "The last dot cannot be followed by a number only in the emailDomain.";
         return email
+    },
+    checkComment(comment){
+        if(!comment) throw "You should input a comment";
+        if(typeof comment!== "string") throw "The comment should be a string"
+        comment=comment.trim()
+        if(comment.length===0) throw "The comment is empty"
+        if(comment.length<5) throw "The length of comment should be at least 5 characters"
+        return comment
     }
 }

@@ -20,6 +20,9 @@ import Modal from "react-bootstrap/Modal";
 import Carousel from "react-bootstrap/Carousel";
 import DeleteCommentModal from "./modals/DeleteCommentModal";
 import DeletePostModal from "./modals/DeletePostModal";
+import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
+  checkLongitude, checkLatitude, checkImage, checkComment} from "./validation/validation"
+
 
 export default function Detail() {
   const { currentUser } = useContext(AuthContext);
@@ -270,26 +273,31 @@ export default function Detail() {
                       {currentUser ? (
                         <Button
                           onClick={async () => {
-                            let newComment = {
-                              postId: location.state.postId,
-                              userId: currentUser.uid,
-                              userName: currentUser.displayName,
-                              comment: document.getElementById("comment").value,
-                            };
-                            await axios
-                              .post(
-                                `http://localhost:4000/posts/${originalData._id}/comment`,
-                                newComment
-                              )
-                              .then(function (response) {
-                                alert("Successfully commented!");
-                                setUpdate((update) => update + 1);
-                                document.getElementById("comment").value = "";
-                              })
-                              .catch(function (error) {
-                                // handle error
-                                alert(error);
-                              });
+                            try{
+                              let newComment = {
+                                postId: location.state.postId,
+                                userId: currentUser.uid,
+                                userName: currentUser.displayName,
+                                comment: checkComment(document.getElementById("comment").value),
+                              };
+                              await axios
+                                .post(
+                                  `http://localhost:4000/posts/${originalData._id}/comment`,
+                                  newComment
+                                )
+                                .then(function (response) {
+                                  alert("Successfully commented!");
+                                  setUpdate((update) => update + 1);
+                                  document.getElementById("comment").value = "";
+                                })
+                                .catch(function (error) {
+                                  // handle error
+                                  alert(error);
+                                });
+                            } catch(e){
+                              if(!e.message) alert(e)
+                              else alert(e.message)
+                            }
                           }}
                         >
                           Comment as {currentUser.displayName}
@@ -323,8 +331,9 @@ export default function Detail() {
                                 new Date(ele.time).getSeconds()}
                             </Card.Subtitle>
                             {currentUser &&
-                            (currentUser.uid == ele.userId ||
-                              currentUser.uid == originalData.userId) ? (
+                           (currentUser.uid === ele.userId) ? (
+  //                          (currentUser.uid === ele.userId ||
+//                              currentUser.uid === originalData.userId) ? (
                               <Button
                                 variant="primary"
                                 onClick={() => {

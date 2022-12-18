@@ -6,6 +6,8 @@ import { getAuth } from "firebase/auth";
 import { Navigate, useLocation, useNavitate } from "react-router-dom";
 import { AuthContext } from "../firebase/Auth";
 import Profile from "./Profile";
+import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
+  checkLongitude, checkLatitude, checkImage, checkComment} from "./validation/validation"
 
 function EditPost() {
   const { currentUser } = useContext(AuthContext);
@@ -84,51 +86,61 @@ function EditPost() {
                   type="submit"
                   onClick={(e) => {
                     e.preventDefault();
-
-                    let newPost = {
-                      title:
-                        document.getElementById("title").value != ""
-                          ? document.getElementById("title").value
-                          : originalData.title,
-                      status:
-                        document.getElementById("status").value != ""
-                          ? document.getElementById("status").value
-                          : originalData.status,
-                      content:
-                        document.getElementById("content").value != ""
-                          ? document.getElementById("content").value
-                          : originalData.content,
-                      petName:
-                        document.getElementById("petName").value != ""
-                          ? document.getElementById("petName").value
-                          : originalData.petName,
-                      token: currentUser.accessToken,
-                    };
-                    console.log(newPost);
-
-                    axios
-                      .patch(
-                        `http://localhost:4000/posts/${location.state.postId}`,
-                        newPost
-                      )
-                      .then(function (response) {
-                        alert("Successfully edit your post!");
-                        navigate("/Detail", {
-                          state: { postId: response.data._id },
+                    try{
+                      if(document.getElementById("title").value === "" &&
+                      document.getElementById("status").value === originalData.status &&
+                      document.getElementById("content").value === "" &&
+                      document.getElementById("petName").value === ""
+                      )  throw "Please edit your change"
+                      let newPost = {
+                        title:
+                          document.getElementById("title").value !== ""
+                            ? checkTitle(document.getElementById("title").value)
+                            : originalData.title,
+                        status:
+                          document.getElementById("status").value !== ""
+                            ? checkStatus(document.getElementById("status").value)
+                            : originalData.status,
+                        content:
+                          document.getElementById("content").value !== ""
+                            ? checkContent(document.getElementById("content").value)
+                            : originalData.content,
+                        petName:
+                          document.getElementById("petName").value !== ""
+                            ? checkPetName(document.getElementById("petName").value)
+                            : originalData.petName,
+                        token: currentUser.accessToken,
+                      };
+                      //console.log(newPost);
+  
+                      axios
+                        .patch(
+                          `http://localhost:4000/posts/${location.state.postId}`,
+                          newPost
+                        )
+                        .then(function (response) {
+                          alert("Successfully edit your post!");
+                          navigate("/Detail", {
+                            state: { postId: response.data._id },
+                          });
+                        })
+                        .catch(function (error) {
+                          alert(error);
                         });
-                      })
-                      .catch(function (error) {
-                        alert(error);
-                      });
-                    // axios.get('http://localhost:4000/posts/')
-                    //     .then(function (response) {
-                    //         // handle success
-                    //         console.log(response);
-                    //     })
-                    //     .catch(function (error) {
-                    //         // handle error
-                    //         console.log(error);
-                    //     });
+                      // axios.get('http://localhost:4000/posts/')
+                      //     .then(function (response) {
+                      //         // handle success
+                      //         console.log(response);
+                      //     })
+                      //     .catch(function (error) {
+                      //         // handle error
+                      //         console.log(error);
+                      //     });
+                    } catch(e){
+                      if(!e.message) alert(e)
+                      else alert(e.message)
+                    }
+
                   }}
                 >
                   Submit
