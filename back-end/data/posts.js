@@ -197,12 +197,24 @@ module.exports = {
     time
   ) {
     try {
+      console.log(
+        "para",
+        longitude,
+        latitude,
+        pagenum,
+        story,
+        found,
+        lost,
+        distance,
+        time
+      );
       const postsCollection = await postsCollections();
       const allPosts = await postsCollection.find({}).toArray();
       if (!allPosts) throw "Could not get all sweets";
       for (let i = 0; i < allPosts.length; i++) {
         allPosts[i]._id = allPosts[i]._id.toString();
       }
+      console.log("allpost", allPosts.length);
       let result = [];
       for (let ele of allPosts) {
         if (
@@ -213,6 +225,7 @@ module.exports = {
           result.push(ele);
         }
       }
+      console.log("result", result.length);
       result = result.slice(10 * pagenum - 10, 10 * pagenum);
       //console.log(result);
       return result;
