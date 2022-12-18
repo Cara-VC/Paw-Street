@@ -87,6 +87,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
+        console.log(filter)
         await axios
           .get(
             `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`
@@ -133,49 +134,49 @@ export default function Home() {
     }
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    async function changePage() {
-      try {
-        await axios
-          .get(
-            `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`
-          )
-          .then(async function (response) {
-            setOriginalData(response.data);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-        await axios
-          .get(
-            `http://localhost:4000/posts/${lnglat.current[0]}/${
-              lnglat.current[1]
-            }?pagenum=${pagenum + 1}&story=${filter.story}&found=${
-              filter.found
-            }&lost=${filter.lost}&distance=${filter.distance}&time=${
-              filter.time
-            }`
-          )
-          .then(function (response) {
-            if (response.data.length != 0) {
-              setNextPage(true);
-            } else {
-              setNextPage(false);
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    changePage();
   }, [pagenum, filter]);
+
+  // useEffect(() => {
+  //   async function changePage() {
+  //     try {
+  //       await axios
+  //         .get(
+  //           `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`
+  //         )
+  //         .then(async function (response) {
+  //           setOriginalData(response.data);
+  //         })
+  //         .catch(function (error) {
+  //           // handle error
+  //           console.log(error);
+  //         });
+  //       await axios
+  //         .get(
+  //           `http://localhost:4000/posts/${lnglat.current[0]}/${
+  //             lnglat.current[1]
+  //           }?pagenum=${pagenum + 1}&story=${filter.story}&found=${
+  //             filter.found
+  //           }&lost=${filter.lost}&distance=${filter.distance}&time=${
+  //             filter.time
+  //           }`
+  //         )
+  //         .then(function (response) {
+  //           if (response.data.length != 0) {
+  //             setNextPage(true);
+  //           } else {
+  //             setNextPage(false);
+  //           }
+  //         })
+  //         .catch(function (error) {
+  //           // handle error
+  //           console.log(error);
+  //         });
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+  //   changePage();
+  // }, [pagenum, filter]);
 
   useEffect(() => {
     if (originalData) {
@@ -208,6 +209,36 @@ export default function Home() {
   const handlePageChange = (event, value) => {
     setPagenum(value);
   };
+
+  let checkBox
+  checkBox = (
+      <Col xs="2">
+      <Form.Check
+        id="story"
+        type="checkbox"
+        label="Story"
+        onChange={() => {
+          setTempStory(document.getElementById("story").checked);
+        }}
+      />
+      <Form.Check
+        id="lost"
+        type="checkbox"
+        label="Lost"
+        onChange={() => {
+          setTempLost(document.getElementById("lost").checked);
+        }}
+      />
+      <Form.Check
+        id="found"
+        type="checkbox"
+        label="Found"
+        onChange={() => {
+          setTempFound(document.getElementById("found").checked);
+        }}
+      />
+    </Col>
+    )
 
   function contentTextTrimer(text) {
     if (text.length >= 100) {
@@ -299,7 +330,7 @@ export default function Home() {
                     }}
                   />
                 </Col>
-                <Col xs="2">
+                {/* <Col xs="2">
                   <Form.Check
                     id="story"
                     type="checkbox"
@@ -318,13 +349,14 @@ export default function Home() {
                   />
                   <Form.Check
                     id="found"
+                    type="checkbox"
+                    label="Found"
                     onChange={() => {
                       setTempFound(document.getElementById("found").checked);
                     }}
-                    type="checkbox"
-                    label="Found"
                   />
-                </Col>
+                </Col> */}
+                {checkBox}
 
                 <Col xs="2">
                   <Form.Select
@@ -402,6 +434,9 @@ export default function Home() {
                             ele.image[0]
                               ? ele.image[0]
                               : "/imgs/missingPicture.jpeg"
+                          }
+                          alt={
+                            ele.image[0]['name'] ? ele.image[0]['name']: "/imgs/missingPicture.jpeg"
                           }
                         />
                         <Card.Body>

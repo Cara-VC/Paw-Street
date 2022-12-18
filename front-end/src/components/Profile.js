@@ -39,8 +39,8 @@ function Profile() {
     if (currentUser) {
         return(
             <Container>
-                <h2>Profile</h2>
-                <h3>Hello, {currentUser.displayName}</h3>
+                <h1>Profile</h1>
+                <h2>Hello, {currentUser.displayName}</h2>
                 <ChangePassword />
                 <SignOutButton />
             </Container>

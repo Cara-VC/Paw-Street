@@ -113,17 +113,17 @@ function NewPost() {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Title</Form.Label>
+            <Form.Label for="title">Title</Form.Label>
             <Form.Control type="input" placeholder="Title" id="title" />
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Pet Name</Form.Label>
+            <Form.Label for="petName">Pet Name</Form.Label>
             <Form.Control type="input" placeholder="Pet Name" id="petName" />
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Content</Form.Label>
+            <Form.Label for="content">Content</Form.Label>
             <Form.Control
               as="textarea"
               type="input"
@@ -133,7 +133,7 @@ function NewPost() {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Upload pictures</Form.Label>
+            <Form.Label for="image">Upload pictures</Form.Label>
             <Form.Control
               type="file"
               multiple

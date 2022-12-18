@@ -242,6 +242,9 @@ export default function MyPosts() {
                               ? ele.image[0]
                               : "/imgs/missingPicture.jpeg"
                           }
+                          alt={
+                            ele.image[0]['name'] ? ele.image[0]['name']: "/imgs/missingPicture.jpeg"
+                          }
                         />
                         <Card.Body>
                           <Card.Title>{ele.title}</Card.Title>

@@ -24,16 +24,16 @@ const Navigation = () => {
                         <Nav className="ml-auto">
                             
                             <NavLink to="/" style={{ textDecoration: 'none' , color:'black' ,marginRight:"25px"}} xs={2} >
-                                <img src="imgs/pawicon.png" style={{ width: '2rem' }}></img>
+                                <img src="imgs/pawicon.png" alt="Paw Street Logo" style={{ width: '2rem' }}></img>
                                 Paw Street
                             </NavLink>
-                            <NavLink to="/" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Home</NavLink>
+                            <NavLink to="/" style={{ textDecoration: 'none' , color:'#737373', marginRight:"10px"}}>Home</NavLink>
 
-                            <NavLink to="/MyPosts" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>My Posts</NavLink>
+                            <NavLink to="/MyPosts" style={{ textDecoration: 'none' , color:'#737373', marginRight:"10px"}}>My Posts</NavLink>
 
-                            <NavLink to="/NewPost" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>New Post</NavLink>
+                            <NavLink to="/NewPost" style={{ textDecoration: 'none' , color:'#737373', marginRight:"10px"}}>New Post</NavLink>
 
-                            <NavLink to="/Profile" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Hello, {currentUser.displayName}</NavLink>
+                            <NavLink to="/Profile" style={{ textDecoration: 'none' , color:'#737373', marginRight:"10px"}}>Hello, {currentUser.displayName}</NavLink>
                         </Nav>
 
                     </Navbar.Collapse>
@@ -47,15 +47,15 @@ const Navigation = () => {
 
                         <Nav>
                             <NavLink to="/" style={{ textDecoration: 'none' , color:'black' ,marginRight:"25px"}} xs={2} >
-                                <img src="imgs/pawicon.png" style={{ width: '2rem' }}></img>
+                                <img src="imgs/pawicon.png"  alt="Paw Street Logo" style={{ width: '2rem' }}></img>
                                 Paw Street
                             </NavLink>
 
-                            <NavLink to="/" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Home</NavLink>
+                            <NavLink to="/" style={{ textDecoration: 'none' , color:'#737373', marginRight:"10px"}}>Home</NavLink>
 
-                            <NavLink to="/SignIn" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Sign In</NavLink>
+                            <NavLink to="/SignIn" style={{ textDecoration: 'none' , color:'#737373', marginRight:"10px"}}>Sign In</NavLink>
 
-                            <NavLink to="/SignUp" style={{ textDecoration: 'none' , color:'gray', marginRight:"10px"}}>Sign Up</NavLink>
+                            <NavLink to="/SignUp" style={{ textDecoration: 'none' , color:'#737373', marginRight:"10px"}}>Sign Up</NavLink>
 
                         </Nav>
 

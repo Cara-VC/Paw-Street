@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
 
 //unfinished
 router.get("/:longitude/:latitude", async (req, res) => {
-  console.log("get /:longitude/:latitude");
+  //console.log("get /:longitude/:latitude");
   try {
     let longitude = req.params.longitude;
     let latitude = req.params.latitude;
@@ -58,6 +58,16 @@ router.get("/:longitude/:latitude", async (req, res) => {
     let distance = req.query.distance;
     let time = req.query.time;
 
+    // console.log(
+    //   longitude,
+    //   latitude,
+    //   pagenum,
+    //   story,
+    //   found,
+    //   lost,
+    //   distance,
+    //   time
+    // )
     const allPosts = await posts.getPostsWithParams(
       longitude,
       latitude,
@@ -70,6 +80,7 @@ router.get("/:longitude/:latitude", async (req, res) => {
     );
     res.json(allPosts);
   } catch (e) {
+    console.log(e)
     res.status(500).json({ message: e });
   }
 });

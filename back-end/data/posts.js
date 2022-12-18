@@ -84,7 +84,7 @@ async function processImage(imageName) {
   });
   //console.log("metadata", metadata);
   const url = `https://firebasestorage.googleapis.com/v0/b/paw-street-cb83d.appspot.com/o/${outputName}?alt=media&token=${metadata.metadata.firebaseStorageDownloadTokens}`;
-  console.log(url);
+  //console.log(url);
   fs.unlinkSync(`public/${imageName}`);
   fs.unlinkSync(`public/${outputName}`);
   return url;
@@ -217,7 +217,7 @@ module.exports = {
       //console.log(result);
       return result;
     } catch (e) {
-      //console.log(e);
+      console.log(e);
       throw e;
     } finally {
       //await postsCollection.closeConnection();

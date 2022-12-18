@@ -189,7 +189,7 @@ export default function Detail() {
                     return (
                       <Carousel.Item>
                         <img
-                          style={{ width: "200px" }}
+                          style={{ width: "200px"}}
                           className="d-block w-100"
                           src={ele}
                           alt="First slide"
@@ -261,7 +261,7 @@ export default function Detail() {
                 <Card.Body>
                   <Card.Title>Comments:</Card.Title>
                   <Form.Group className="mb-3" xs={10}>
-                    <Form.Label>Leave a comment:</Form.Label>
+                    <Form.Label for="comment">Leave a comment:</Form.Label>
                     <Row>
                       <Form.Control
                         as="textarea"
