@@ -43,7 +43,7 @@ export default function MyPosts() {
 
   //const handleClose = () => setShow(false);
   //const handleShow = () => setShow(true);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [showDeletePostModal, setShowDeletePostModal] = useState(false);
   const [deletePost, setDeletePost] = useState(null);
   const [reloadAfterDeletePost, setReloadAfterDeletePost] = useState(false);
@@ -84,19 +84,26 @@ export default function MyPosts() {
           // handle error
           console.log(error);
         });
-
-      await navigator.geolocation.getCurrentPosition(function (position) {
-        lnglat.current = [position.coords.longitude, position.coords.latitude];
-        currentLocationMarker.setLngLat(lnglat.current);
-      });
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchData();
+    navigator.geolocation.getCurrentPosition(function (position) {
+      lnglat.current = [position.coords.longitude, position.coords.latitude];
+      currentLocationMarker.setLngLat(lnglat.current);
+    });
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchData();
+    setIsLoading(false);
+  }, [pagenum, reloadAfterDeletePost]);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -117,10 +124,6 @@ export default function MyPosts() {
       setZoom(map.current.getZoom().toFixed(2));
     });
   }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [pagenum, reloadAfterDeletePost]);
 
   useEffect(() => {
     if (originalData) {
@@ -215,7 +218,7 @@ export default function MyPosts() {
 
           <Row>
             <Col>
-              {!originalData
+              {!originalData || isLoading
                 ? null
                 : originalData.map((ele) => {
                     //console.log("ele", ele._id, ele.userName);

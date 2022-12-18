@@ -13,11 +13,12 @@ export default function DeleteCommentModal(props) {
   const [comment, setComment] = useState(props.deleteComment);
 
   const handleDeleteComment = async () => {
-    console.log(comment.userName, typeof comment.userName)
-    console.log(currentUser.displayName, typeof currentUser.displayName)
-    if (comment.userName!==currentUser.displayName) alert("Deleted fail. You could not delete other users comment.")
+    //console.log(comment.userName, typeof comment.userName)
+    //console.log(currentUser.displayName, typeof currentUser.displayName)
+    if (comment.userName !== currentUser.displayName)
+      alert("Deleted fail. You could not delete other users comment.");
     else {
-        await axios
+      await axios
         .delete(`http://localhost:4000/posts/${post._id}/${comment._id}`, {
           headers: {
             token: currentUser.accessToken,
