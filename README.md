@@ -8,13 +8,21 @@ Paw Street builds a community where pet lovers can post about everything related
 ## Instruction:
 
 1.Install MongoDB on your own computer.
+
 2.Install Imagemagick on your own computer.
+
 3.Install Iedis on your own computer.
+
 4.Execute seed.js to generate tables and data.
+
 5.Execute npm install to install all the node modules.
+
 6.Execute npm start to start our backend application.
+
 7.Execute npm install to install all the node modules.
+
 8.Execute npm start to start our react application.
+
 
 ## Group Members:
 
