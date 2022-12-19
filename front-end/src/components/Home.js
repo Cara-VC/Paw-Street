@@ -249,28 +249,6 @@ export default function Home() {
   return (
     <Container>
       <h1>Home</h1>
-      {!originalData ? (
-          <Row>
-            <h2>Failed to get data. </h2>
-            <Row className="col-6 col-sm-4" hidden>
-              <div ref={mapContainer} className="map-container" />
-              <div className="sidebar">
-                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-              </div>
-            </Row>
-          </Row>
-
-      ) : originalData && originalData.length == 0 ? (
-          <Row>
-            <h2>It seems like there is no post. </h2>
-            <Row className="col-6 col-sm-4" hidden>
-              <div ref={mapContainer} className="map-container" />
-              <div className="sidebar">
-                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-              </div>
-            </Row>
-          </Row>
-      ) : (
         <Row>
           <Col xs="12">
             <Form>
@@ -413,7 +391,13 @@ export default function Home() {
             </Form>
           </Col>
 
+
           <Row>
+          {!originalData ? (<h2>Failed to get data.</h2>
+          ) : originalData && originalData.length == 0 ? (
+            <h2>It seems like there is no post.</h2>
+          ) : (
+            
             <Col xs="6">
               {!originalData
                 ? null
@@ -497,6 +481,8 @@ export default function Home() {
                     );
                   })}
             </Col>
+          )}
+
             <Col xs="6">
               <div ref={mapContainer} className="map-container" />
               <div className="sidebar">
@@ -505,7 +491,7 @@ export default function Home() {
             </Col>
           </Row>
         </Row>
-      )}
+      
     </Container>
   );
 }

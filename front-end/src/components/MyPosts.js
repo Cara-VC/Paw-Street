@@ -180,7 +180,7 @@ export default function MyPosts() {
 
       ) : originalData && originalData.length == 0 ? (
         <Row>
-          <h2>It seems like you do not have any post. </h2>
+          <h2>It seems like you do not have any post. Click the 'New Post' above to create your first story!</h2>
           <Row className="col-6 col-sm-4" hidden>
             <div ref={mapContainer} className="map-container" />
             <div className="sidebar">
