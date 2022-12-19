@@ -9,9 +9,9 @@ Paw Street builds a community where pet lovers can post about everything related
 
 1.Install MongoDB on your own computer.
 
-2.Install Imagemagick on your own computer.
+2.Install Imagemagick on your own computer. ImageMagick download here: https://imagemagick.org/script/download.php
 
-3.Install Iedis on your own computer.
+3.Install Redis on your own computer.
 
 4.Execute seed.js to generate tables and data.
 
@@ -38,13 +38,19 @@ An Sun 10468679
 
 React is an open-source JavaScript front-end library. We will use React to develop single-page application. React component are reusable. By using that, application could be developed efficiently.
 
+We use React to implement front-end of our project to generate single page application with components.
+
 ### 2.Redis
 
 Redis is an in-memory key-value database. We can store data in RAM and reduce API calls.
 
+Redis helps us to save time when we need to get some posts which are same as in RAM. When the back-end application receives GET request, it will query Redis first to get cached post. When the back-end application receives PATCH and DELETE comments requests, it will update cached post. When the back-end application receives DELETE post request, it will DELETE cached post as well. 
+
 ### 3.Firebase Authentication
 
 Firebase Auth provides back-end services. We will use firebase auth to manage users' authentication.
+
+We implement sign up with email, sign in with email, sign in with google, sign out, reset password and change password with Firebase Authentication in our front-end application. In back-end, it receives access token from front-end requests and verifies them with the firebase-admin.
 
 ## Independent Technologies:
 
@@ -52,13 +58,17 @@ Firebase Auth provides back-end services. We will use firebase auth to manage us
 
 ImageMagick is free software delivered as a ready-to-run binary distribution. We will use it to process pictures uploaded by users. For example, transform into a smaller size to the same space to make it easy to show as an icon on the map.
 
-Please make sure ImageMagick has already install before running this project on local computer. ImageMagick download here: https://imagemagick.org/script/download.php
+We re-size uploaded images to 128 * 128 and re-format these images to .jpeg in order to save storage and manage them easier.
 
-Make sure command "magick" could running on the path "/front-end"
+Please make sure ImageMagick has already install before running this project on local computer. ImageMagick download here: https://imagemagick.org/script/download.php
 
 ### 2.AWS
 
 We will use AWS as cloud platform and deploy the website on cloud. 
+
+We deploy the front-end application and the back-end application to AWS EC2 and use pm2 to manage those applications.
+
+Currently, the back-end runs good but the front-end has some issues with rendering. So we upload 2 front-end application with 2 versions. The first one queries the back-end application on AWS and the other one queries the back-end application on your device. Please follow the instruction above. 
 
 ## Backend APIs
 
