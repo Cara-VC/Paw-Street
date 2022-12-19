@@ -19,6 +19,7 @@ import { AuthContext } from "../firebase/Auth";
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 export default function MyPosts() {
+  let showMyPosts
   const { currentUser } = useContext(AuthContext);
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -97,7 +98,7 @@ export default function MyPosts() {
       currentLocationMarker.setLngLat(lnglat.current);
     });
     setIsLoading(false);
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -164,31 +165,116 @@ export default function MyPosts() {
     return text;
   }
 
+// useEffect(() => {
+  if(!originalData|| isLoading){
+      showMyPosts=<span>Still Loading</span>
+  } else {
+    if(originalData && originalData.length == 0){
+      showMyPosts=<span>It seems like you do not have any post. Click the 'New Post' above to create your first story!</span>
+    } else {
+      showMyPosts=(
+<Col>
+      {originalData.map((ele) => {
+      //console.log("ele", ele._id, ele.userName);
+      return (
+        <Card
+          key={ele._id}
+          className="square border border-5"
+          style={{ width: "25rem" }}
+          border={
+            ele.status === "lost"
+              ? "danger"
+              : ele.status === "found"
+              ? "primary"
+              : "success"
+          }
+        >
+          <Card.Header className="text-center">
+            {ele.status.toUpperCase()}
+          </Card.Header>
+          <Card.Img
+            variant="top"
+            src={
+              ele.image[0]
+                ? ele.image[0]
+                : "/imgs/missingPicture.jpeg"
+            }
+            alt={
+              ele.image[0]['name'] ? ele.image[0]['name']: "/imgs/missingPicture.jpeg"
+            }
+          />
+          <Card.Body>
+            <Card.Title>{ele.title}</Card.Title>
+            <Card.Subtitle className="mb-2 text-muted text-end">
+              Pet Name: {ele.petName}
+            </Card.Subtitle>
+            <Card.Subtitle className="mb-2 text-muted text-end">
+              Posted by {ele.userName} at{" "}
+              {new Date(ele.time).getDate() +
+                "/" +
+                (new Date(ele.time).getMonth() + 1) +
+                "/" +
+                new Date(ele.time).getFullYear() +
+                " " +
+                new Date(ele.time).getHours() +
+                ":" +
+                new Date(ele.time).getMinutes() +
+                ":" +
+                new Date(ele.time).getSeconds()}
+            </Card.Subtitle>
+            <Card.Text>
+              {contentTextTrimer(ele.content)}
+            </Card.Text>
+            <Button
+              variant="primary"
+              onClick={() => {
+                navigate("/Detail", {
+                  state: { postId: ele._id },
+                });
+              }}
+            >
+              Detail
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                navigate("/Edit", {
+                  state: { postId: ele._id },
+                });
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                handleDeletePostModal(ele);
+              }}
+            >
+              Delete
+            </Button>
+            {showDeletePostModal && (
+              <DeletePostModal
+                isOpen={showDeletePostModal}
+                handleCloseWithYes={handleCloseModal}
+                handleCloseWithNo={handleCloseModal}
+                deletePost={deletePost}
+              />
+            )}
+          </Card.Body>
+        </Card>
+      );
+    })}
+
+</Col>
+      )
+    }
+  }
+// }, [showMyPosts]);
+
   return (
     <Container>
       <h1>My Posts</h1>
-      {/* {!originalData ? (
-          <Row>
-            <h2>Failed to get data. </h2>
-            <Row className="col-6 col-sm-4" hidden>
-              <div ref={mapContainer} className="map-container" />
-              <div className="sidebar">
-                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-              </div>
-            </Row>
-          </Row>
-
-      ) : originalData && originalData.length == 0 ? (
-        <Row>
-          <h2>It seems like you do not have any post. Click the 'New Post' above to create your first story!</h2>
-          <Row className="col-6 col-sm-4" hidden>
-            <div ref={mapContainer} className="map-container" />
-            <div className="sidebar">
-            Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-          </div>
-          </Row>
-        </Row>
-      ) : ( */}
         <Row>
           <Col>
             <Pagination>
@@ -236,7 +322,7 @@ export default function MyPosts() {
           </Col>
 
           <Row>
-                {!originalData || isLoading
+                {/* {!originalData || isLoading
                   ? (<span>Still Loading</span>
                   ): originalData && originalData.length == 0 ? (
                     <span>It seems like you do not have any post. Click the 'New Post' above to create your first story!</span>
@@ -335,7 +421,8 @@ export default function MyPosts() {
                   })}
               
               </Col>
-            )}
+            )} */}
+            {showMyPosts}
 
             <Row className="col-6 col-sm-4">
               <div ref={mapContainer} className="map-container" />
@@ -345,7 +432,6 @@ export default function MyPosts() {
             </Row>
           </Row>
         </Row>
-      {/* )} */}
     </Container>
   );
 }
