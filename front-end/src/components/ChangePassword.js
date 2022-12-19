@@ -41,11 +41,12 @@ function ChangePassword() {
     }
   };
   //console.log("chagepswd curuser 3", auth.currentUser);
+  
+  // console.log(currentUser)
   if (currentUser === null) {
     //console.log("chagepswd curuser 3", currentUser.providerData[0].providerId);
     return <Navigate to="/" />;
-  }
-  if (currentUser.providerData[0].providerId === "password") {
+  } else if (currentUser && currentUser.providerData[0].providerId === "password") {
     return (
       <div>
         {pwMatch && <h4 className="error">{pwMatch}</h4>}

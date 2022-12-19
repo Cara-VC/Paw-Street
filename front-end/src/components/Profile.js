@@ -10,6 +10,9 @@ import { doChangePassword, doSignOut } from "../firebase/FirebaseFunctions";
 function Profile() {
 
     const { currentUser } = useContext(AuthContext);
+    const [ifCurUser, setIfCurUser] = useState(false)
+    // const [curUserName, setCurUserName] = useState("");
+
     // const [pwMatch, setPwMatch] = useState("");
     // //console.log("changepsed curuser 1", currentUser);
     //
@@ -36,16 +39,27 @@ function Profile() {
     //         alert(error);
     //     }
     // };
+
+    let ifChange=null
+    useEffect( () => {
+        if(Object.keys(currentUser).length !== 0){
+            setIfCurUser(true)
+        }
+    //     setCurUserName(currentUser.displayName)
+    }, [currentUser]);
+
+    if(ifCurUser) ifChange=<ChangePassword />
+    
     if (currentUser) {
+        //console.log(currentUser)
         return(
             <Container>
                 <h1>Profile</h1>
                 <h2>Hello, {currentUser.displayName}</h2>
-                <ChangePassword />
+                {ifChange}    
                 <SignOutButton />
             </Container>
         );
-
     } else {
         return <Navigate to="/signin" />;
     }
