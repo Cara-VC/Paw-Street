@@ -23,7 +23,7 @@ const Navigation = () => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ml-auto">
                             
-                            <NavLink to="/" style={{ textDecoration: 'none' , color:'black' ,marginRight:"25px"}} xs={2} >
+                            <NavLink to="/" style={{ textDecoration: 'none' , color:'black' ,marginRight:"25px"}}>
                                 <img src="imgs/pawicon.png" alt="Paw Street Logo" style={{ width: '2rem' }}></img>
                                 Paw Street
                             </NavLink>
@@ -46,7 +46,7 @@ const Navigation = () => {
                 <Container>
 
                         <Nav>
-                            <NavLink to="/" style={{ textDecoration: 'none' , color:'black' ,marginRight:"25px"}} xs={2} >
+                            <NavLink to="/" style={{ textDecoration: 'none' , color:'black' ,marginRight:"25px"}}>
                                 <img src="imgs/pawicon.png"  alt="Paw Street Logo" style={{ width: '2rem' }}></img>
                                 Paw Street
                             </NavLink>

@@ -114,12 +114,12 @@ function NewPost() {
 
           <Form.Group className="mb-3">
             <Form.Label for="title">Title</Form.Label>
-            <Form.Control type="input" placeholder="Title" id="title" />
+            <Form.Control id="title" />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label for="petName">Pet Name</Form.Label>
-            <Form.Control type="input" placeholder="Pet Name" id="petName" />
+            <Form.Control id="petName" />
           </Form.Group>
 
           <Form.Group className="mb-3">

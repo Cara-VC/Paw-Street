@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import SocialSignIn from "./SocialSignIn";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../firebase/Auth";
@@ -11,6 +11,7 @@ import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, check
   checkLongitude, checkLatitude, checkImage, checkPassword, checkEmail} from "./validation/validation"
 
 function SignIn() {
+  const [ifCurUser, setIfCurUser] = useState(false)
   const auth = getAuth();
   const { currentUser } = useContext(AuthContext);
   const handleLogin = async (event) => {
@@ -56,10 +57,8 @@ function SignIn() {
     }
     setPW()
   };
-  if (currentUser) {
-    return <Navigate to="/" />;
-  }
-  return (
+
+  const loginPage=(
     <div className="container">
       <h1>Log in</h1>
       <form onSubmit={handleLogin}>
@@ -99,7 +98,22 @@ function SignIn() {
       <br />
       <SocialSignIn />
     </div>
-  );
+  )
+  useEffect( () => {
+      if(currentUser!==null&&Object.keys(currentUser).length !== 0){
+        console.log(currentUser)
+          setIfCurUser(true)
+      }
+    //     setCurUserName(currentUser.displayName)
+    }, [currentUser]);
+
+  if (!ifCurUser) {
+    console.log(1,currentUser)
+    return loginPage
+  } else {
+    console.log(3,currentUser)
+    return <Navigate to="/" />;
+  }
 }
 
 export default SignIn;

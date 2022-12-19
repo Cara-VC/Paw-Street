@@ -42,7 +42,7 @@ function Profile() {
 
     let ifChange=null
     useEffect( () => {
-        if(Object.keys(currentUser).length !== 0){
+        if(currentUser!==null&&Object.keys(currentUser).length !== 0){
             setIfCurUser(true)
         }
     //     setCurUserName(currentUser.displayName)
