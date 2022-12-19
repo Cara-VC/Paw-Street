@@ -167,7 +167,7 @@ export default function MyPosts() {
   return (
     <Container>
       <h1>My Posts</h1>
-      {!originalData ? (
+      {/* {!originalData ? (
           <Row>
             <h2>Failed to get data. </h2>
             <Row className="col-6 col-sm-4" hidden>
@@ -188,7 +188,7 @@ export default function MyPosts() {
           </div>
           </Row>
         </Row>
-      ) : (
+      ) : ( */}
         <Row>
           <Col>
             <Pagination>
@@ -236,10 +236,13 @@ export default function MyPosts() {
           </Col>
 
           <Row>
-            <Col>
-              {!originalData || isLoading
-                ? null
-                : originalData.map((ele) => {
+                {!originalData || isLoading
+                  ? (<span>Still Loading</span>
+                  ): originalData && originalData.length == 0 ? (
+                    <span>It seems like you do not have any post. Click the 'New Post' above to create your first story!</span>
+                  ):(
+              <Col>
+                    {originalData.map((ele) => {
                     //console.log("ele", ele._id, ele.userName);
                     return (
                       <Card
@@ -330,7 +333,9 @@ export default function MyPosts() {
                       </Card>
                     );
                   })}
-            </Col>
+              
+              </Col>
+            )}
 
             <Row className="col-6 col-sm-4">
               <div ref={mapContainer} className="map-container" />
@@ -340,7 +345,7 @@ export default function MyPosts() {
             </Row>
           </Row>
         </Row>
-      )}
+      {/* )} */}
     </Container>
   );
 }
