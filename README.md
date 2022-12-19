@@ -5,6 +5,17 @@
 Fluffy friends could be an important part in our life. Studies have shown that they can improve our physical and mental health. In the meantime, it's important to raise pets in a health way. And it could be heart-breaking if someone lost his pet.
 Paw Street builds a community where pet lovers can post about everything related to their pets including stories and lost and found information. Users can see what's new around them and those lost pets and found pets. We believe that our application will help pet lovers share and gain information to lead a happy time with their pets.
 
+## Instruction:
+
+1.Install MongoDB on your own computer.
+2.Install Imagemagick on your own computer.
+3.Install Iedis on your own computer.
+4.Execute seed.js to generate tables and data.
+5.Execute npm install to install all the node modules.
+6.Execute npm start to start our backend application.
+7.Execute npm install to install all the node modules.
+8.Execute npm start to start our react application.
+
 ## Group Members:
 
 Lingrui Li 10478741
