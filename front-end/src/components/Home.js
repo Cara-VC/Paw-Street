@@ -87,7 +87,6 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log(filter)
         await axios
           .get(
             `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`
@@ -250,7 +249,28 @@ export default function Home() {
   return (
     <Container>
       <h1>Home</h1>
-      {!originalData ? null : (
+      {!originalData ? (
+          <Row>
+            <h2>Failed to get data. </h2>
+            <Row className="col-6 col-sm-4" hidden>
+              <div ref={mapContainer} className="map-container" />
+              <div className="sidebar">
+                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+              </div>
+            </Row>
+          </Row>
+
+      ) : originalData && originalData.length == 0 ? (
+          <Row>
+            <h2>It seems like there is no post. </h2>
+            <Row className="col-6 col-sm-4" hidden>
+              <div ref={mapContainer} className="map-container" />
+              <div className="sidebar">
+                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+              </div>
+            </Row>
+          </Row>
+      ) : (
         <Row>
           <Col xs="12">
             <Form>

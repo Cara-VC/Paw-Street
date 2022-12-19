@@ -167,8 +167,27 @@ export default function MyPosts() {
   return (
     <Container>
       <h1>My Posts</h1>
-      {!originalData ? null : originalData && originalData == [] ? (
-        <h2>It seems like you do not have any post. :</h2>
+      {!originalData ? (
+          <Row>
+            <h2>Failed to get data. </h2>
+            <Row className="col-6 col-sm-4" hidden>
+              <div ref={mapContainer} className="map-container" />
+              <div className="sidebar">
+                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+              </div>
+            </Row>
+          </Row>
+
+      ) : originalData && originalData.length == 0 ? (
+        <Row>
+          <h2>It seems like you do not have any post. </h2>
+          <Row className="col-6 col-sm-4" hidden>
+            <div ref={mapContainer} className="map-container" />
+            <div className="sidebar">
+            Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+          </div>
+          </Row>
+        </Row>
       ) : (
         <Row>
           <Col>
