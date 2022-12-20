@@ -62,7 +62,9 @@ export default function MyPosts() {
   const fetchData = async () => {
     try {
       await axios
-        .get(`http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum}`)
+        .get(
+          `http://3.94.145.116:4000/user/${currentUser.uid}?pagenum=${pagenum}`
+        )
         .then(function (response) {
           setOriginalData(response.data);
         })
@@ -72,7 +74,9 @@ export default function MyPosts() {
         });
       await axios
         .get(
-          `http://localhost:4000/user/${currentUser.uid}?pagenum=${pagenum + 1}`
+          `http://3.94.145.116:4000/user/${currentUser.uid}?pagenum=${
+            pagenum + 1
+          }`
         )
         .then(function (response) {
           if (response.data.length != 0) {

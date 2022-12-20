@@ -12,8 +12,17 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { storage } from "../firebase/Firebase";
-import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
-       checkLongitude, checkLatitude, checkImage} from "./validation/validation"
+import {
+  checkTitle,
+  checkUserId,
+  checkUserName,
+  checkStatus,
+  checkContent,
+  checkPetName,
+  checkLongitude,
+  checkLatitude,
+  checkImage,
+} from "./validation/validation";
 
 function NewPost() {
   const { currentUser } = useContext(AuthContext);
@@ -22,14 +31,26 @@ function NewPost() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      
+
       let newPostFormData = new FormData();
-      newPostFormData.set("title", checkTitle(document.getElementById("title").value));
+      newPostFormData.set(
+        "title",
+        checkTitle(document.getElementById("title").value)
+      );
       newPostFormData.set("userId", checkUserId(currentUser.uid));
       newPostFormData.set("userName", checkUserName(currentUser.displayName));
-      newPostFormData.set("status", checkStatus(document.getElementById("status").value));
-      newPostFormData.set("content", checkContent(document.getElementById("content").value));
-      newPostFormData.set("petName", checkPetName(document.getElementById("petName").value));
+      newPostFormData.set(
+        "status",
+        checkStatus(document.getElementById("status").value)
+      );
+      newPostFormData.set(
+        "content",
+        checkContent(document.getElementById("content").value)
+      );
+      newPostFormData.set(
+        "petName",
+        checkPetName(document.getElementById("petName").value)
+      );
       newPostFormData.set("longitude", checkLongitude(lnglat.current[0]));
       newPostFormData.set("latitude", checkLatitude(lnglat.current[1]));
       //newPostFormData.set("token", currentUser.accessToken);
@@ -40,7 +61,7 @@ function NewPost() {
       );
 
       axios
-        .post("http://localhost:4000/posts/", newPostFormData)
+        .post("http://3.94.145.116:4000/posts/", newPostFormData)
         .then(function (response) {
           alert("Successfully create a new post!");
           navigate("/Detail", { state: { postId: response.data._id } });

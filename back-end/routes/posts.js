@@ -30,6 +30,7 @@ router.get("/", async (req, res) => {
     const allPosts = await posts.getAllPosts();
     res.json(allPosts);
   } catch (e) {
+    console.log(e);
     res.status(500).json({ message: e });
   }
 });
@@ -112,7 +113,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     );
     res.status(200).json(newPost);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     res.status(500).json(`${e.message}`);
   }
 });
@@ -137,6 +138,7 @@ router.get("/:id", async (req, res) => {
   } catch (e) {
     //console.log(e);
     res.status(500).json({ message: e });
+
   }
 });
 
@@ -157,7 +159,7 @@ router.patch("/:id", async (req, res) => {
     }
     res.status(200).json(updatedPost);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     res.status(500).json({ message: e });
   }
 });
@@ -176,7 +178,7 @@ router.delete("/:id", async (req, res) => {
     const result = await posts.deleteById(postId, token);
     res.status(200).json(result);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     res.status(500).json({ e });
   }
 });
@@ -205,7 +207,7 @@ router.post("/:id/comment", async (req, res) => {
     }
     res.status(200).json(addComment);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     res.status(500).json({ message: e });
   }
 });
@@ -225,9 +227,9 @@ router.delete("/:postId/:commentId", async (req, res) => {
     }
     res.status(200).json(result);
   } catch (e) {
-    // console.log(e);
-    // console.log(e.message);
-    res.status(500).json({ message: e.message });
+
+    console.log(e);
+    res.status(500).json({ message: e });
   }
 });
 

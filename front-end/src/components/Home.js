@@ -89,7 +89,7 @@ export default function Home() {
       try {
         await axios
           .get(
-            `http://localhost:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`
+            `http://3.94.145.116:4000/posts/${lnglat.current[0]}/${lnglat.current[1]}?pagenum=${pagenum}&story=${filter.story}&found=${filter.found}&lost=${filter.lost}&distance=${filter.distance}&time=${filter.time}`
           )
           .then(function (response) {
             setOriginalData(response.data);
@@ -100,7 +100,7 @@ export default function Home() {
           });
         await axios
           .get(
-            `http://localhost:4000/posts/${lnglat.current[0]}/${
+            `http://3.94.145.116:4000/posts/${lnglat.current[0]}/${
               lnglat.current[1]
             }?pagenum=${pagenum + 1}&story=${filter.story}&found=${
               filter.found
@@ -133,6 +133,7 @@ export default function Home() {
     }
 
     fetchData();
+
   }, [pagenum, filter]);
 
   // useEffect(() => {

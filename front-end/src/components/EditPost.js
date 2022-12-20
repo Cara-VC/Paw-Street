@@ -19,7 +19,7 @@ function EditPost() {
     async function fetchData() {
       try {
         await axios
-          .get(`http://localhost:4000/posts/${location.state.postId}`)
+          .get(`http://3.94.145.116:4000/posts/${location.state.postId}`)
           .then(function (response) {
             setOriginalData(response.data);
           })
@@ -126,6 +126,7 @@ function EditPost() {
                         })
                         .catch(function (error) {
                           alert(error);
+
                         });
                       // axios.get('http://localhost:4000/posts/')
                       //     .then(function (response) {
