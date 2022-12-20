@@ -62,6 +62,8 @@ We re-size uploaded images to 128 * 128 and re-format these images to .jpeg in o
 
 Please make sure ImageMagick has already install before running this project on local computer. ImageMagick download here: https://imagemagick.org/script/download.php
 
+Check back-end/public/shrinkImage.js, make sure you require the fit version on gm.
+
 ### 2.AWS
 
 We will use AWS as cloud platform and deploy the website on cloud. 

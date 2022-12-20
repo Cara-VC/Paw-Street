@@ -1,7 +1,8 @@
 var fs = require("fs");
 const gm = require("gm").subClass({
-  imageMagick: true,
-  //	 appPath: String.raw`C:\Program Files\ImageMagick\magick.exe`
+  //Set "imageMagick: '7+'" if your imageMagick is version 7+
+  //Or set "imageMagick: true" if your imageMagick is old version(< 7) on your computer
+  imageMagick: '7+',
 });
 
 //inputPath should be a string like "my/imput/path/image.png", ".png" could change to any other type
