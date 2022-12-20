@@ -15,7 +15,7 @@ router.get("/:uid", async (req, res) => {
     res.status(200).json(postsByUser);
   } catch (e) {
     console.log(e);
-    res.status(404).json({ message: e });
+    res.status(500).json({ message: e });
   }
 });
 

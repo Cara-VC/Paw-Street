@@ -20,9 +20,18 @@ import Modal from "react-bootstrap/Modal";
 import Carousel from "react-bootstrap/Carousel";
 import DeleteCommentModal from "./modals/DeleteCommentModal";
 import DeletePostModal from "./modals/DeletePostModal";
-import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
-  checkLongitude, checkLatitude, checkImage, checkComment} from "./validation/validation"
-
+import {
+  checkTitle,
+  checkUserId,
+  checkUserName,
+  checkStatus,
+  checkContent,
+  checkPetName,
+  checkLongitude,
+  checkLatitude,
+  checkImage,
+  checkComment,
+} from "./validation/validation";
 
 export default function Detail() {
   const { currentUser } = useContext(AuthContext);
@@ -150,7 +159,14 @@ export default function Detail() {
 
   useEffect(() => {
     if (originalData) {
-      const marker = new mapboxgl.Marker()
+      const marker = new mapboxgl.Marker({
+        color:
+          originalData.status == "lost"
+            ? "#ff0000"
+            : originalData.status == "found"
+            ? "#0000ff"
+            : "#00ff00",
+      })
         .setLngLat([originalData.longitude, originalData.latitude])
         .setPopup(
           new mapboxgl.Popup({ offset: 25 }).setHTML(
@@ -194,7 +210,7 @@ export default function Detail() {
                     return (
                       <Carousel.Item>
                         <img
-                          style={{ width: "200px"}}
+                          style={{ width: "200px" }}
                           className="d-block w-100"
                           src={ele}
                           alt="First slide"
@@ -278,12 +294,14 @@ export default function Detail() {
                       {currentUser ? (
                         <Button
                           onClick={async () => {
-                            try{
+                            try {
                               let newComment = {
                                 postId: location.state.postId,
                                 userId: currentUser.uid,
                                 userName: currentUser.displayName,
-                                comment: checkComment(document.getElementById("comment").value),
+                                comment: checkComment(
+                                  document.getElementById("comment").value
+                                ),
                               };
                               await axios
                                 .post(
@@ -299,9 +317,9 @@ export default function Detail() {
                                   // handle error
                                   alert(error);
                                 });
-                            } catch(e){
-                              if(!e.message) alert(e)
-                              else alert(e.message)
+                            } catch (e) {
+                              if (!e.message) alert(e);
+                              else alert(e.message);
                             }
                           }}
                         >
@@ -335,10 +353,9 @@ export default function Detail() {
                                 ":" +
                                 new Date(ele.time).getSeconds()}
                             </Card.Subtitle>
-                            {currentUser &&
-                           (currentUser.uid === ele.userId) ? (
-  //                          (currentUser.uid === ele.userId ||
-//                              currentUser.uid === originalData.userId) ? (
+                            {currentUser && currentUser.uid === ele.userId ? (
+                              //                          (currentUser.uid === ele.userId ||
+                              //                              currentUser.uid === originalData.userId) ? (
                               <Button
                                 variant="primary"
                                 onClick={() => {

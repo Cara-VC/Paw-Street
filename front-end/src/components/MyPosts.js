@@ -19,7 +19,7 @@ import { AuthContext } from "../firebase/Auth";
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
 
 export default function MyPosts() {
-  let showMyPosts
+  let showMyPosts;
   const { currentUser } = useContext(AuthContext);
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -135,7 +135,14 @@ export default function MyPosts() {
       const newMarkers = [];
 
       for (let i = 0; i < originalData.length && i < 10; i++) {
-        let temp = new mapboxgl.Marker()
+        let temp = new mapboxgl.Marker({
+          color:
+            originalData[i].status == "lost"
+              ? "#ff0000"
+              : originalData[i].status == "found"
+              ? "#0000ff"
+              : "#00ff00",
+        })
           .setLngLat([originalData[i].longitude, originalData[i].latitude])
           .setPopup(
             new mapboxgl.Popup({}).setHTML(
@@ -165,164 +172,166 @@ export default function MyPosts() {
     return text;
   }
 
-// useEffect(() => {
-  if(!originalData|| isLoading){
-      showMyPosts=<span>Still Loading</span>
+  // useEffect(() => {
+  if (!originalData || isLoading) {
+    showMyPosts = <span>Still Loading</span>;
   } else {
-    if(originalData && originalData.length == 0){
-      showMyPosts=<span>It seems like you do not have any post. Click the 'New Post' above to create your first story!</span>
-    } else {
-      showMyPosts=(
-<Col>
-      {originalData.map((ele) => {
-      //console.log("ele", ele._id, ele.userName);
-      return (
-        <Card
-          key={ele._id}
-          className="square border border-5"
-          style={{ width: "25rem" }}
-          border={
-            ele.status === "lost"
-              ? "danger"
-              : ele.status === "found"
-              ? "primary"
-              : "success"
-          }
-        >
-          <Card.Header className="text-center">
-            {ele.status.toUpperCase()}
-          </Card.Header>
-          <Card.Img
-            variant="top"
-            src={
-              ele.image[0]
-                ? ele.image[0]
-                : "/imgs/missingPicture.jpeg"
-            }
-            alt={
-              ele.image[0]['name'] ? ele.image[0]['name']: "/imgs/missingPicture.jpeg"
-            }
-          />
-          <Card.Body>
-            <Card.Title>{ele.title}</Card.Title>
-            <Card.Subtitle className="mb-2 text-muted text-end">
-              Pet Name: {ele.petName}
-            </Card.Subtitle>
-            <Card.Subtitle className="mb-2 text-muted text-end">
-              Posted by {ele.userName} at{" "}
-              {new Date(ele.time).getDate() +
-                "/" +
-                (new Date(ele.time).getMonth() + 1) +
-                "/" +
-                new Date(ele.time).getFullYear() +
-                " " +
-                new Date(ele.time).getHours() +
-                ":" +
-                new Date(ele.time).getMinutes() +
-                ":" +
-                new Date(ele.time).getSeconds()}
-            </Card.Subtitle>
-            <Card.Text>
-              {contentTextTrimer(ele.content)}
-            </Card.Text>
-            <Button
-              variant="primary"
-              onClick={() => {
-                navigate("/Detail", {
-                  state: { postId: ele._id },
-                });
-              }}
-            >
-              Detail
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                navigate("/Edit", {
-                  state: { postId: ele._id },
-                });
-              }}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                handleDeletePostModal(ele);
-              }}
-            >
-              Delete
-            </Button>
-            {showDeletePostModal && (
-              <DeletePostModal
-                isOpen={showDeletePostModal}
-                handleCloseWithYes={handleCloseModal}
-                handleCloseWithNo={handleCloseModal}
-                deletePost={deletePost}
-              />
-            )}
-          </Card.Body>
-        </Card>
+    if (originalData && originalData.length == 0) {
+      showMyPosts = (
+        <h2>
+          It seems like you do not have any post. Click the 'New Post' above to
+          create your first story!
+        </h2>
       );
-    })}
-
-</Col>
-      )
+    } else {
+      showMyPosts = (
+        <Col>
+          {originalData.map((ele) => {
+            //console.log("ele", ele._id, ele.userName);
+            return (
+              <Card
+                key={ele._id}
+                className="square border border-5"
+                style={{ width: "25rem" }}
+                border={
+                  ele.status === "lost"
+                    ? "danger"
+                    : ele.status === "found"
+                    ? "primary"
+                    : "success"
+                }
+              >
+                <Card.Header className="text-center">
+                  {ele.status.toUpperCase()}
+                </Card.Header>
+                <Card.Img
+                  variant="top"
+                  src={
+                    ele.image[0] ? ele.image[0] : "/imgs/missingPicture.jpeg"
+                  }
+                  alt={
+                    ele.image[0]["name"]
+                      ? ele.image[0]["name"]
+                      : "/imgs/missingPicture.jpeg"
+                  }
+                />
+                <Card.Body>
+                  <Card.Title>{ele.title}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted text-end">
+                    Pet Name: {ele.petName}
+                  </Card.Subtitle>
+                  <Card.Subtitle className="mb-2 text-muted text-end">
+                    Posted by {ele.userName} at{" "}
+                    {new Date(ele.time).getDate() +
+                      "/" +
+                      (new Date(ele.time).getMonth() + 1) +
+                      "/" +
+                      new Date(ele.time).getFullYear() +
+                      " " +
+                      new Date(ele.time).getHours() +
+                      ":" +
+                      new Date(ele.time).getMinutes() +
+                      ":" +
+                      new Date(ele.time).getSeconds()}
+                  </Card.Subtitle>
+                  <Card.Text>{contentTextTrimer(ele.content)}</Card.Text>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      navigate("/Detail", {
+                        state: { postId: ele._id },
+                      });
+                    }}
+                  >
+                    Detail
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      navigate("/Edit", {
+                        state: { postId: ele._id },
+                      });
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      handleDeletePostModal(ele);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                  {showDeletePostModal && (
+                    <DeletePostModal
+                      isOpen={showDeletePostModal}
+                      handleCloseWithYes={handleCloseModal}
+                      handleCloseWithNo={handleCloseModal}
+                      deletePost={deletePost}
+                    />
+                  )}
+                </Card.Body>
+              </Card>
+            );
+          })}
+        </Col>
+      );
     }
   }
-// }, [showMyPosts]);
+  // }, [showMyPosts]);
 
   return (
     <Container>
       <h1>My Posts</h1>
-        <Row>
-          <Col>
-            <Pagination>
-              <Pagination.First
+      <Row>
+        <Col>
+          <Pagination>
+            <Pagination.First
+              onClick={() => {
+                setPagenum(1);
+              }}
+            />
+            {pagenum === 1 ? (
+              <Pagination.Prev
                 onClick={() => {
-                  setPagenum(1);
+                  setPagenum(pagenum - 1);
+                }}
+                disabled
+              />
+            ) : (
+              <Pagination.Prev
+                onClick={() => {
+                  setPagenum(pagenum - 1);
                 }}
               />
-              {pagenum === 1 ? (
-                <Pagination.Prev
+            )}
+            <Pagination.Item active>{pagenum}</Pagination.Item>
+            {/*<Pagination.Ellipsis />*/}
+            {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
+            {
+              // pagenum === Math.ceil(originalData.length / 10) ?
+              nextPage == true ? (
+                <Pagination.Next
                   onClick={() => {
-                    setPagenum(pagenum - 1);
+                    setPagenum(pagenum + 1);
+                  }}
+                />
+              ) : (
+                <Pagination.Next
+                  onClick={() => {
+                    setPagenum(pagenum + 1);
                   }}
                   disabled
                 />
-              ) : (
-                <Pagination.Prev
-                  onClick={() => {
-                    setPagenum(pagenum - 1);
-                  }}
-                />
-              )}
-              <Pagination.Item active>{pagenum}</Pagination.Item>
-              {/*<Pagination.Ellipsis />*/}
-              {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
-              {
-                // pagenum === Math.ceil(originalData.length / 10) ?
-                nextPage == true ? (
-                  <Pagination.Next
-                    onClick={() => {
-                      setPagenum(pagenum + 1);
-                    }}
-                  />
-                ) : (
-                  <Pagination.Next
-                    onClick={() => {
-                      setPagenum(pagenum + 1);
-                    }}
-                    disabled
-                  />
-                )
-              }
-              {/*<Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>*/}
-            </Pagination>
-          </Col>
+              )
+            }
+            {/*<Pagination.Last onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}/>*/}
+          </Pagination>
+        </Col>
 
-          <Row>
-                {/* {!originalData || isLoading
+        <Row>
+          {/* {!originalData || isLoading
                   ? (<span>Still Loading</span>
                   ): originalData && originalData.length == 0 ? (
                     <span>It seems like you do not have any post. Click the 'New Post' above to create your first story!</span>
@@ -422,16 +431,16 @@ export default function MyPosts() {
               
               </Col>
             )} */}
-            {showMyPosts}
+          {showMyPosts}
 
-            <Row className="col-6 col-sm-4">
-              <div ref={mapContainer} className="map-container" />
-              <div className="sidebar">
-                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-              </div>
-            </Row>
+          <Row className="col-6 col-sm-4">
+            <div ref={mapContainer} className="map-container" />
+            <div className="sidebar">
+              Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+            </div>
           </Row>
         </Row>
+      </Row>
     </Container>
   );
 }

@@ -22,17 +22,6 @@ var upload = multer({ storage: storage });
 const redis = require("redis");
 const client = redis.createClient();
 client.connect().then(() => {});
-// async function main(){
-//
-//   try{
-//     let a = await posts.getPostsWithParams("-70", "40", "1", "true", "true", "true", "5", "all");
-//     console.dir (a,{depth:null});
-//   }
-//   catch (e){
-//     console.log(e);
-//   }
-// }
-// main()
 
 //get all posts
 router.get("/", async (req, res) => {
@@ -80,7 +69,7 @@ router.get("/:longitude/:latitude", async (req, res) => {
     );
     res.json(allPosts);
   } catch (e) {
-    console.log(e)
+    console.log(e);
     res.status(500).json({ message: e });
   }
 });
@@ -147,7 +136,7 @@ router.get("/:id", async (req, res) => {
     //console.log("checkSweetId")
   } catch (e) {
     //console.log(e);
-    res.status(404).json({ message: e });
+    res.status(500).json({ message: e });
   }
 });
 
@@ -202,16 +191,12 @@ router.post("/:id/comment", async (req, res) => {
     const comment = checker.checkComment(commentInfo.comment);
     const userId = checker.checkUserId(commentInfo.userId);
     const userName = checker.checkUsername(commentInfo.userName);
-    //let toUser = undefined;
-    //if (commentInfo.toUser) toUser = commentInfo.toUser;
-    //else toUser = null;
 
     const addComment = await posts.addComment(
       userId,
       userName,
       comment,
       postId
-      //toUser
     );
     let exists = await client.exists(postId);
     if (exists) {
@@ -242,7 +227,7 @@ router.delete("/:postId/:commentId", async (req, res) => {
   } catch (e) {
     // console.log(e);
     // console.log(e.message);
-    res.status(500).json({ message: e.message});
+    res.status(500).json({ message: e.message });
   }
 });
 

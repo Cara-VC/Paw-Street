@@ -186,7 +186,14 @@ export default function Home() {
       const newMarkers = [];
 
       for (let i = 0; i < originalData.length && i < 10; i++) {
-        let temp = new mapboxgl.Marker()
+        let temp = new mapboxgl.Marker({
+          color:
+            originalData[i].status == "lost"
+              ? "#ff0000"
+              : originalData[i].status == "found"
+              ? "#0000ff"
+              : "#00ff00",
+        })
           .setLngLat([originalData[i].longitude, originalData[i].latitude])
           .setPopup(
             new mapboxgl.Popup({}).setHTML(
@@ -209,9 +216,9 @@ export default function Home() {
     setPagenum(value);
   };
 
-  let checkBox
+  let checkBox;
   checkBox = (
-      <Col xs="2">
+    <Col xs="2">
       <Form.Check
         id="story"
         type="checkbox"
@@ -237,7 +244,7 @@ export default function Home() {
         }}
       />
     </Col>
-    )
+  );
 
   function contentTextTrimer(text) {
     if (text.length >= 100) {
@@ -249,86 +256,78 @@ export default function Home() {
   return (
     <Container>
       <h1>Home</h1>
-        <Row>
-          <Col xs="12">
-            <Form>
-              <Row>
-                <Col xs="2">
-                  <Pagination>
-                    <Pagination.First
-                      onClick={() => {
-                        setPagenum(1);
-                      }}
-                    />
-                    {pagenum === 1 ? (
-                      <Pagination.Prev
-                        onClick={() => {
-                          setPagenum(pagenum - 1);
-                        }}
-                        disabled
-                      />
-                    ) : (
-                      <Pagination.Prev
-                        onClick={() => {
-                          setPagenum(pagenum - 1);
-                        }}
-                      />
-                    )}
-                    <Pagination.Item active>{pagenum}</Pagination.Item>
-
-                    {nextPage == true ? (
-                      <Pagination.Next
-                        onClick={() => {
-                          setPagenum(pagenum + 1);
-                        }}
-                      />
-                    ) : (
-                      <Pagination.Next
-                        onClick={() => {
-                          setPagenum(pagenum + 1);
-                        }}
-                        disabled
-                      />
-                    )}
-                  </Pagination>
-                </Col>
-                <Col xs="2">
-                  <label htmlFor="distance" className="form-label">
-                    {showRange}
-                  </label>
-                  <input
-                    type="range"
-                    className="form-range"
-                    id="distance"
-                    min="1"
-                    max="5"
-                    step="1"
-                    defaultValue="3"
-                    onChange={() => {
-                      if (document.getElementById("distance").value == 1) {
-                        setShowRange("Range: 1 mile");
-                      } else if (
-                        document.getElementById("distance").value == 2
-                      ) {
-                        setShowRange("Range: 5 miles");
-                      } else if (
-                        document.getElementById("distance").value == 3
-                      ) {
-                        setShowRange("Range: 10 miles");
-                      } else if (
-                        document.getElementById("distance").value == 4
-                      ) {
-                        setShowRange("Range: 50 miles");
-                      } else {
-                        setShowRange("Nationwide");
-                      }
-                      setTempDistance(
-                        document.getElementById("distance").value
-                      );
+      <Row>
+        <Col xs="12">
+          <Form>
+            <Row>
+              <Col xs="2">
+                <Pagination>
+                  <Pagination.First
+                    onClick={() => {
+                      setPagenum(1);
                     }}
                   />
-                </Col>
-                {/* <Col xs="2">
+                  {pagenum === 1 ? (
+                    <Pagination.Prev
+                      onClick={() => {
+                        setPagenum(pagenum - 1);
+                      }}
+                      disabled
+                    />
+                  ) : (
+                    <Pagination.Prev
+                      onClick={() => {
+                        setPagenum(pagenum - 1);
+                      }}
+                    />
+                  )}
+                  <Pagination.Item active>{pagenum}</Pagination.Item>
+
+                  {nextPage == true ? (
+                    <Pagination.Next
+                      onClick={() => {
+                        setPagenum(pagenum + 1);
+                      }}
+                    />
+                  ) : (
+                    <Pagination.Next
+                      onClick={() => {
+                        setPagenum(pagenum + 1);
+                      }}
+                      disabled
+                    />
+                  )}
+                </Pagination>
+              </Col>
+              <Col xs="2">
+                <label htmlFor="distance" className="form-label">
+                  {showRange}
+                </label>
+                <input
+                  type="range"
+                  className="form-range"
+                  id="distance"
+                  min="1"
+                  max="5"
+                  step="1"
+                  defaultValue="3"
+                  onChange={() => {
+                    if (document.getElementById("distance").value == 1) {
+                      setShowRange("Range: 1 mile");
+                    } else if (document.getElementById("distance").value == 2) {
+                      setShowRange("Range: 5 miles");
+                    } else if (document.getElementById("distance").value == 3) {
+                      setShowRange("Range: 10 miles");
+                    } else if (document.getElementById("distance").value == 4) {
+                      setShowRange("Range: 50 miles");
+                    } else {
+                      setShowRange("Nationwide");
+                    }
+                    setTempDistance(document.getElementById("distance").value);
+                  }}
+                />
+              </Col>
+              {/* <Col xs="2">
                   <Form.Check
                     id="story"
                     type="checkbox"
@@ -354,144 +353,160 @@ export default function Home() {
                     }}
                   />
                 </Col> */}
-                {checkBox}
+              {checkBox}
 
-                <Col xs="2">
-                  <Form.Select
-                    size="sm"
-                    id="time"
-                    onChange={() => {
-                      setTempTime(document.getElementById("time").value);
-                    }}
-                  >
-                    <option value="all">all time</option>
-                    <option value="oneWeek">in one week</option>
-                    <option value="oneMonth">in one month</option>
-                    <option value="threeMonths">in three months</option>
-                  </Form.Select>
-                </Col>
-                <Col xs="3">
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      setPagenum(1);
-                      setFilter({
-                        distance: tempDistance,
-                        story: tempStory,
-                        found: tempFound,
-                        lost: tempLost,
-                        time: tempTime,
-                      });
-                    }}
-                  >
-                    submit filter
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-          </Col>
+              <Col xs="2">
+                <Form.Select
+                  size="sm"
+                  id="time"
+                  onChange={() => {
+                    setTempTime(document.getElementById("time").value);
+                  }}
+                >
+                  <option value="all">all time</option>
+                  <option value="oneWeek">in one week</option>
+                  <option value="oneMonth">in one month</option>
+                  <option value="threeMonths">in three months</option>
+                </Form.Select>
+              </Col>
+              <Col xs="3">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    setPagenum(1);
+                    setFilter({
+                      distance: tempDistance,
+                      story: tempStory,
+                      found: tempFound,
+                      lost: tempLost,
+                      time: tempTime,
+                    });
+                  }}
+                >
+                  submit filter
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
 
-
-          <Row>
-          {!originalData ? (<h2>Failed to get data.</h2>
+        <Row>
+          {!originalData ? (
+            <h2>Failed to get data.</h2>
           ) : originalData && originalData.length == 0 ? (
-            <h2>It seems like there is no post.</h2>
+            <Row>
+              <h2>It seems like there is no post.</h2>
+              <Col xs="6" hidden>
+                <div ref={mapContainer} className="map-container" />
+                <div className="sidebar">
+                  Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+                </div>
+              </Col>
+            </Row>
           ) : (
-            
-            <Col xs="6">
-              {!originalData
-                ? null
-                : originalData.map((ele) => {
-                    // const storageRef = ref(storage, ele.image[0]);
-                    //
-                    // getDownloadURL(storageRef)
-                    //     .then(async (url) => {
-                    //         // const img = document.getElementById(`${ele._id}`);
-                    //         // img.setAttribute('src', url);
-                    //         // console.log(url);
-                    //
-                    //     })
-                    //     .catch((error) => {
-                    //         alert(error);
-                    //     });
+            <Row>
+              <Col xs="6">
+                {!originalData
+                  ? null
+                  : originalData.map((ele) => {
+                      // const storageRef = ref(storage, ele.image[0]);
+                      //
+                      // getDownloadURL(storageRef)
+                      //     .then(async (url) => {
+                      //         // const img = document.getElementById(`${ele._id}`);
+                      //         // img.setAttribute('src', url);
+                      //         // console.log(url);
+                      //
+                      //     })
+                      //     .catch((error) => {
+                      //         alert(error);
+                      //     });
 
-                    // console.log([ele.longitude, ele.latitude ], markerStack);
-                    return (
-                      <Card
-                        className="square border border-5"
-                        style={{ width: "25rem" }}
-                        key={ele._id}
-                        border={
-                          ele.status === "lost"
-                            ? "danger"
-                            : ele.status === "found"
-                            ? "primary"
-                            : "success"
-                        }
-                      >
-                        <Card.Header className="text-center">
-                          {ele.status.toUpperCase()}
-                        </Card.Header>
-                        <Card.Img
-                          variant="top"
-                          src={
-                            ele.image[0]
-                              ? ele.image[0]
-                              : "/imgs/missingPicture.jpeg"
+                      // console.log([ele.longitude, ele.latitude ], markerStack);
+                      return (
+                        <Card
+                          className="square border border-5"
+                          style={{ width: "25rem" }}
+                          key={ele._id}
+                          border={
+                            ele.status === "lost"
+                              ? "danger"
+                              : ele.status === "found"
+                              ? "primary"
+                              : "success"
                           }
-                          alt={
-                            ele.image[0]['name'] ? ele.image[0]['name']: "/imgs/missingPicture.jpeg"
-                          }
-                        />
-                        <Card.Body>
-                          <Card.Title>{ele.title}</Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted text-end">
-                            Pet Name: {ele.petName}
-                          </Card.Subtitle>
-                          <Card.Subtitle className="mb-2 text-muted text-end">
-                            Posted by {ele.userName} at{" "}
-                            {new Date(ele.time).getDate() +
-                              "/" +
-                              (new Date(ele.time).getMonth() + 1) +
-                              "/" +
-                              new Date(ele.time).getFullYear() +
-                              " " +
-                              new Date(ele.time).getHours() +
-                              ":" +
-                              new Date(ele.time).getMinutes() +
-                              ":" +
-                              new Date(ele.time).getSeconds()}
-                          </Card.Subtitle>
+                        >
+                          <Card.Header className="text-center">
+                            {ele.status.toUpperCase()}
+                          </Card.Header>
+                          <Card.Img
+                            variant="top"
+                            src={
+                              ele.image[0]
+                                ? ele.image[0]
+                                : "/imgs/missingPicture.jpeg"
+                            }
+                            alt={
+                              ele.image[0]["name"]
+                                ? ele.image[0]["name"]
+                                : "/imgs/missingPicture.jpeg"
+                            }
+                          />
+                          <Card.Body>
+                            <Card.Title>{ele.title}</Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted text-end">
+                              Pet Name: {ele.petName}
+                            </Card.Subtitle>
+                            <Card.Subtitle className="mb-2 text-muted text-end">
+                              Posted by {ele.userName} at{" "}
+                              {new Date(ele.time).getDate() +
+                                "/" +
+                                (new Date(ele.time).getMonth() + 1) +
+                                "/" +
+                                new Date(ele.time).getFullYear() +
+                                " " +
+                                new Date(ele.time).getHours() +
+                                ":" +
+                                new Date(ele.time).getMinutes() +
+                                ":" +
+                                new Date(ele.time).getSeconds()}
+                            </Card.Subtitle>
 
-                          <Card.Text>
-                            {contentTextTrimer(ele.content)}
-                          </Card.Text>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              navigate("/Detail", {
-                                state: { postId: ele._id },
-                              });
-                            }}
-                          >
-                            Detail
-                          </Button>
-                        </Card.Body>
-                      </Card>
-                    );
-                  })}
-            </Col>
+                            <Card.Text>
+                              {contentTextTrimer(ele.content)}
+                            </Card.Text>
+                            <Button
+                              variant="primary"
+                              onClick={() => {
+                                navigate("/Detail", {
+                                  state: { postId: ele._id },
+                                });
+                              }}
+                            >
+                              Detail
+                            </Button>
+                          </Card.Body>
+                        </Card>
+                      );
+                    })}
+              </Col>
+              <Col xs="6">
+                <div ref={mapContainer} className="map-container" />
+                <div className="sidebar">
+                  Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+                </div>
+              </Col>
+            </Row>
           )}
 
-            <Col xs="6">
-              <div ref={mapContainer} className="map-container" />
-              <div className="sidebar">
-                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-              </div>
-            </Col>
-          </Row>
+          {/* <Col xs="6">
+            <div ref={mapContainer} className="map-container" />
+            <div className="sidebar">
+              Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+            </div>
+          </Col> */}
         </Row>
-      
+      </Row>
     </Container>
   );
 }
