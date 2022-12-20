@@ -11,7 +11,7 @@ function DeletePostModal(props) {
 
   const handleDeletePost = () => {
     axios
-      .delete(`http://3.94.145.116:4000/posts/${post._id}`, {
+      .delete(`http://localhost:4000/posts/${post._id}`, {
         headers: {
           token: currentUser.accessToken,
         },

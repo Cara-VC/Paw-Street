@@ -6,8 +6,18 @@ import { getAuth } from "firebase/auth";
 import { Navigate, useLocation, useNavitate } from "react-router-dom";
 import { AuthContext } from "../firebase/Auth";
 import Profile from "./Profile";
-import {checkTitle, checkUserId, checkUserName, checkStatus, checkContent, checkPetName, 
-  checkLongitude, checkLatitude, checkImage, checkComment} from "./validation/validation"
+import {
+  checkTitle,
+  checkUserId,
+  checkUserName,
+  checkStatus,
+  checkContent,
+  checkPetName,
+  checkLongitude,
+  checkLatitude,
+  checkImage,
+  checkComment,
+} from "./validation/validation";
 
 function EditPost() {
   const { currentUser } = useContext(AuthContext);
@@ -19,7 +29,7 @@ function EditPost() {
     async function fetchData() {
       try {
         await axios
-          .get(`http://3.94.145.116:4000/posts/${location.state.postId}`)
+          .get(`http://localhost:4000/posts/${location.state.postId}`)
           .then(function (response) {
             setOriginalData(response.data);
           })
@@ -86,12 +96,15 @@ function EditPost() {
                   type="submit"
                   onClick={(e) => {
                     e.preventDefault();
-                    try{
-                      if(document.getElementById("title").value === "" &&
-                      document.getElementById("status").value === originalData.status &&
-                      document.getElementById("content").value === "" &&
-                      document.getElementById("petName").value === ""
-                      )  throw "Please edit your change"
+                    try {
+                      if (
+                        document.getElementById("title").value === "" &&
+                        document.getElementById("status").value ===
+                          originalData.status &&
+                        document.getElementById("content").value === "" &&
+                        document.getElementById("petName").value === ""
+                      )
+                        throw "Please edit your change";
                       let newPost = {
                         title:
                           document.getElementById("title").value !== ""
@@ -99,20 +112,26 @@ function EditPost() {
                             : originalData.title,
                         status:
                           document.getElementById("status").value !== ""
-                            ? checkStatus(document.getElementById("status").value)
+                            ? checkStatus(
+                                document.getElementById("status").value
+                              )
                             : originalData.status,
                         content:
                           document.getElementById("content").value !== ""
-                            ? checkContent(document.getElementById("content").value)
+                            ? checkContent(
+                                document.getElementById("content").value
+                              )
                             : originalData.content,
                         petName:
                           document.getElementById("petName").value !== ""
-                            ? checkPetName(document.getElementById("petName").value)
+                            ? checkPetName(
+                                document.getElementById("petName").value
+                              )
                             : originalData.petName,
                         token: currentUser.accessToken,
                       };
                       //console.log(newPost);
-  
+
                       axios
                         .patch(
                           `http://localhost:4000/posts/${location.state.postId}`,
@@ -126,7 +145,6 @@ function EditPost() {
                         })
                         .catch(function (error) {
                           alert(error);
-
                         });
                       // axios.get('http://localhost:4000/posts/')
                       //     .then(function (response) {
@@ -137,11 +155,10 @@ function EditPost() {
                       //         // handle error
                       //         console.log(error);
                       //     });
-                    } catch(e){
-                      if(!e.message) alert(e)
-                      else alert(e.message)
+                    } catch (e) {
+                      if (!e.message) alert(e);
+                      else alert(e.message);
                     }
-
                   }}
                 >
                   Submit

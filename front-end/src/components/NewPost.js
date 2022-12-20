@@ -61,7 +61,7 @@ function NewPost() {
       );
 
       axios
-        .post("http://3.94.145.116:4000/posts/", newPostFormData)
+        .post("http://localhost:4000/posts/", newPostFormData)
         .then(function (response) {
           alert("Successfully create a new post!");
           navigate("/Detail", { state: { postId: response.data._id } });

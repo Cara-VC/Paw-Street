@@ -1,9 +1,7 @@
 var fs = require("fs");
 const gm = require("gm").subClass({
-
-  imageMagick: true,
+  imageMagick: "7+",
   //	 appPath: String.raw`C:\Program Files\ImageMagick\magick.exe`
-
 });
 
 //inputPath should be a string like "my/imput/path/image.png", ".png" could change to any other type
