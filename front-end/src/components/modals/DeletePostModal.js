@@ -22,13 +22,13 @@ function DeletePostModal(props) {
         } else {
           alert("Deleted fail!");
         }
+        props.handleCloseWithYes();
       })
       .catch(function (error) {
         alert(error);
       });
     setShowDeletePostModal(false);
     setPost(null);
-    props.handleCloseWithYes();
   };
 
   const handleCloseDeleteModal = () => {

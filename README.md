@@ -7,22 +7,33 @@ Paw Street builds a community where pet lovers can post about everything related
 
 ## Instruction:
 
+To view our application, you can simply click this [link](https://main.d124q48c450o66.amplifyapp.com/)(Please allow "Location" and "Insecure content" in site settings)
+![Alt text](images/PermissionInstruction1.png "Optional title")
+![Alt text](images/PermissionInstruction2.png "Optional title")
+![Alt text](images/PermissionInstruction3.png "Optional title")
+
+or run both frontend and backend on your device by following 5 steps below.(Database will be different but you don't need to sign up twice.)
+
 1.Install MongoDB on your own computer.
 
-2.Install Imagemagick on your own computer. ImageMagick download here: https://imagemagick.org/script/download.php
+2.Install Imagemagick on your own computer. ImageMagick download [here](https://imagemagick.org/script/download.php)
 
 3.Install Redis on your own computer.
 
-4.Execute seed.js to generate tables and data.
+4.Please open a terminal in back-end folder and copy the commands below to run backend.
 
-5.Execute npm install to install all the node modules.
+```
+npm run seed
+npm run install
+npm run start
+```
 
-6.Execute npm start to start our backend application.
+5.Please open a terminal in front-end folder and copy the commands below to run frontend.
 
-7.Execute npm install to install all the node modules.
-
-8.Execute npm start to start our react application.
-
+```
+npm run install
+npm run start
+```
 
 ## Group Members:
 
@@ -44,7 +55,7 @@ We use React to implement front-end of our project to generate single page appli
 
 Redis is an in-memory key-value database. We can store data in RAM and reduce API calls.
 
-Redis helps us to save time when we need to get some posts which are same as in RAM. When the back-end application receives GET request, it will query Redis first to get cached post. When the back-end application receives PATCH and DELETE comments requests, it will update cached post. When the back-end application receives DELETE post request, it will DELETE cached post as well. 
+Redis helps us to save time when we need to get some posts which are same as in RAM. When the back-end application receives GET request, it will query Redis first to get cached post. When the back-end application receives PATCH and DELETE comments requests, it will update cached post. When the back-end application receives DELETE post request, it will DELETE cached post as well.
 
 ### 3.Firebase Authentication
 
@@ -58,7 +69,7 @@ We implement sign up with email, sign in with email, sign in with google, sign o
 
 ImageMagick is free software delivered as a ready-to-run binary distribution. We will use it to process pictures uploaded by users. For example, transform into a smaller size to the same space to make it easy to show as an icon on the map.
 
-We re-size uploaded images to 128 * 128 and re-format these images to .jpeg in order to save storage and manage them easier.
+We re-size uploaded images to 128 \* 128 and re-format these images to .jpeg in order to save storage and manage them easier.
 
 Please make sure ImageMagick has already install before running this project on local computer. ImageMagick download here: https://imagemagick.org/script/download.php
 
@@ -66,12 +77,8 @@ Check back-end/public/shrinkImage.js, make sure you require the fit version on g
 
 ### 2.AWS
 
-We will use AWS as cloud platform and deploy the website on cloud. 
-
-We deploy the front-end application and the back-end application to AWS EC2 and use pm2 to manage those applications.
-
-Currently, the back-end runs good but the front-end has some issues with rendering. So we upload 2 front-end application with 2 versions. The first one queries the back-end application on AWS and the other one queries the back-end application on your device. Please follow the instruction above. 
+We deploy the front-end react to AWS Amplify. It is a great platform that we can easily deploy react in production. We deploy the back-end application to AWS EC2 and use pm2 to manage it. EC2 is really a hard part for us, especially we have MongoDB, Redis and imageMagick running in backstage. Code runs perfect in my laptop but things are differdent in the cloud. Thanks my laptop for spoiling me and I will not throw it out of the window again when deploying the code, peace.
 
 ## Backend APIs
 
-[link to url](https://documenter.getpostman.com/view/19990402/2s8YzWQfVy)
+We implemented 9 backend APIs. You can find details [here.](https://documenter.getpostman.com/view/19990402/2s8YzWQfVy) GET requests are callable in Postman. POST, PATCH and DELETE requests need firebase token in the request header or body.

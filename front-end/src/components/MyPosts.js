@@ -1,19 +1,9 @@
 import React, { useRef, useContext, useEffect, useState } from "react";
-import {
-  Container,
-  Form,
-  Button,
-  Pagination,
-  Row,
-  Card,
-  Col,
-} from "react-bootstrap";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Container, Button, Pagination, Row, Card, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
-import ModalContext from "react-bootstrap/ModalContext";
-import Modal from "react-bootstrap/Modal";
 import DeletePostModal from "./modals/DeletePostModal";
 import { AuthContext } from "../firebase/Auth";
 import CurrentLocationLngLatContext from "./CurrentLocationLngLatContext";
@@ -39,12 +29,7 @@ export default function MyPosts() {
   const [nextPage, setNextPage] = useState(false);
   const [originalData, setOriginalData] = useState([]);
   const [markerStack, setMarkerStack] = useState([]);
-  //const [update, setUpdate] = useState(1);
-  //const [show, setShow] = useState(false);
 
-  //const handleClose = () => setShow(false);
-  //const handleShow = () => setShow(true);
-  const [isLoading, setIsLoading] = useState(true);
   const [showDeletePostModal, setShowDeletePostModal] = useState(false);
   const [deletePost, setDeletePost] = useState(null);
   const [reloadAfterDeletePost, setReloadAfterDeletePost] = useState(false);
@@ -91,19 +76,15 @@ export default function MyPosts() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     fetchData();
     navigator.geolocation.getCurrentPosition(function (position) {
       lnglat.current = [position.coords.longitude, position.coords.latitude];
       currentLocationMarker.setLngLat(lnglat.current);
     });
-    setIsLoading(false);
   }, [currentUser]);
 
   useEffect(() => {
-    setIsLoading(true);
     fetchData();
-    setIsLoading(false);
   }, [pagenum, reloadAfterDeletePost]);
 
   useEffect(() => {
@@ -172,8 +153,7 @@ export default function MyPosts() {
     return text;
   }
 
-  // useEffect(() => {
-  if (!originalData || isLoading) {
+  if (!originalData) {
     showMyPosts = <span>Still Loading</span>;
   } else {
     if (originalData && originalData.length == 0) {
@@ -307,8 +287,6 @@ export default function MyPosts() {
               />
             )}
             <Pagination.Item active>{pagenum}</Pagination.Item>
-            {/*<Pagination.Ellipsis />*/}
-            {/*<Pagination.Item onClick={()=>{setPagenum(Math.ceil(selectedData.length / 10))}}>{Math.ceil(selectedData.length / 10)}</Pagination.Item>*/}
             {
               // pagenum === Math.ceil(originalData.length / 10) ?
               nextPage == true ? (
@@ -331,106 +309,6 @@ export default function MyPosts() {
         </Col>
 
         <Row>
-          {/* {!originalData || isLoading
-                  ? (<span>Still Loading</span>
-                  ): originalData && originalData.length == 0 ? (
-                    <span>It seems like you do not have any post. Click the 'New Post' above to create your first story!</span>
-                  ):(
-              <Col>
-                    {originalData.map((ele) => {
-                    //console.log("ele", ele._id, ele.userName);
-                    return (
-                      <Card
-                        key={ele._id}
-                        className="square border border-5"
-                        style={{ width: "25rem" }}
-                        border={
-                          ele.status === "lost"
-                            ? "danger"
-                            : ele.status === "found"
-                            ? "primary"
-                            : "success"
-                        }
-                      >
-                        <Card.Header className="text-center">
-                          {ele.status.toUpperCase()}
-                        </Card.Header>
-                        <Card.Img
-                          variant="top"
-                          src={
-                            ele.image[0]
-                              ? ele.image[0]
-                              : "/imgs/missingPicture.jpeg"
-                          }
-                          alt={
-                            ele.image[0]['name'] ? ele.image[0]['name']: "/imgs/missingPicture.jpeg"
-                          }
-                        />
-                        <Card.Body>
-                          <Card.Title>{ele.title}</Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted text-end">
-                            Pet Name: {ele.petName}
-                          </Card.Subtitle>
-                          <Card.Subtitle className="mb-2 text-muted text-end">
-                            Posted by {ele.userName} at{" "}
-                            {new Date(ele.time).getDate() +
-                              "/" +
-                              (new Date(ele.time).getMonth() + 1) +
-                              "/" +
-                              new Date(ele.time).getFullYear() +
-                              " " +
-                              new Date(ele.time).getHours() +
-                              ":" +
-                              new Date(ele.time).getMinutes() +
-                              ":" +
-                              new Date(ele.time).getSeconds()}
-                          </Card.Subtitle>
-                          <Card.Text>
-                            {contentTextTrimer(ele.content)}
-                          </Card.Text>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              navigate("/Detail", {
-                                state: { postId: ele._id },
-                              });
-                            }}
-                          >
-                            Detail
-                          </Button>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              navigate("/Edit", {
-                                state: { postId: ele._id },
-                              });
-                            }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              handleDeletePostModal(ele);
-                            }}
-                          >
-                            Delete
-                          </Button>
-                          {showDeletePostModal && (
-                            <DeletePostModal
-                              isOpen={showDeletePostModal}
-                              handleCloseWithYes={handleCloseModal}
-                              handleCloseWithNo={handleCloseModal}
-                              deletePost={deletePost}
-                            />
-                          )}
-                        </Card.Body>
-                      </Card>
-                    );
-                  })}
-              
-              </Col>
-            )} */}
           {showMyPosts}
 
           <Row className="col-6 col-sm-4">
