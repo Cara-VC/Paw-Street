@@ -23,16 +23,16 @@ or run both frontend and backend on your device by following 5 steps below.(Data
 4.Please open a terminal in back-end folder and copy the commands below to run backend.
 
 ```
+npm install
 npm run seed
-npm run install
-npm run start
+npm start
 ```
 
 5.Please open a terminal in front-end folder and copy the commands below to run frontend.
 
 ```
-npm run install
-npm run start
+npm install
+npm start
 ```
 
 ## Group Members:
