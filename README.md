@@ -43,7 +43,7 @@ Jiyuan Xia 10468319
 
 An Sun 10468679
 
-## Course Technologies:
+## Cores Technologies:
 
 ### 1.React
 
